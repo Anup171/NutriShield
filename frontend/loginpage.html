@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Nutrishield</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="display:flex;align-items:center;justify-content:center;padding:24px;min-height:100vh;">
+  <div class="container" role="main" aria-label="Login form">
+    <div class="brand">
+      <div class="logo-mark">N</div>
+      <div>
+        <h2>Nutrishield</h2>
+        <p>Allergy-safe nutrition, simplified</p>
+      </div>
+    </div>
+
+    <form id="loginForm" autocomplete="on" novalidate>
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+      </div>
+
+      <div class="actions">
+        <button type="submit">Log In</button>
+        <button type="button" class="secondary" onclick="location.href='signup.html'">Sign Up</button>
+      </div>
+    </form>
+
+    <p class="meta">By logging in you agree to the <a href="#">terms</a> — need help? <a href="#">Support</a></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

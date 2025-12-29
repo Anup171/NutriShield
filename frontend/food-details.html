@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Food Details | Nutrishield</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="food-details-page">
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">N</div>
+      <div class="logo-text">
+        <div class="logo-text-main">Nutri<span>shield</span></div>
+        <div class="logo-tagline">Allergy-safe nutrition, simplified</div>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="about.html">About</a>
+      <a href="#" id="logoutBtn">Log Out</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="food-details-main">
+    <!-- BACK BUTTON -->
+    <div class="back-nav">
+      <a href="dashboard.html" class="back-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back to Dashboard
+      </a>
+    </div>
+
+    <!-- FOOD TITLE & ALLERGY WARNING -->
+    <section class="food-header-section">
+      <div class="food-title-block">
+        <h1 class="food-name" id="foodName">Chicken Biryani</h1>
+        <p class="food-category" id="foodCategory">Indian Cuisine • Main Course</p>
+      </div>
+
+      <!-- ALLERGY WARNING CARD (Shows if allergens detected) -->
+      <div class="allergy-warning-card" id="allergyWarning" style="display: none;">
+        <div class="warning-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="warning-content">
+          <h3>⚠️ Allergy Warning</h3>
+          <p>This food contains ingredients you are allergic to:</p>
+          <div class="detected-allergens" id="detectedAllergens"></div>
+        </div>
+      </div>
+
+      <!-- SAFE INDICATOR (Shows if no allergens) -->
+      <div class="safe-indicator-card" id="safeIndicator">
+        <div class="safe-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="safe-content">
+          <h3>✓ Safe to Eat</h3>
+          <p>No allergens detected based on your profile</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NUTRITION & INGREDIENTS GRID -->
+    <section class="details-grid">
+      <!-- NUTRITION FACTS CARD -->
+      <div class="details-card">
+        <div class="details-card-header">
+          <h2>Nutrition Facts</h2>
+          <span class="serving-badge">Per Serving (250g)</span>
+        </div>
+        <div class="details-card-body">
+          <div class="nutrition-list">
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Calories</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="calories">420</span>
+                <span class="value-unit">kcal</span>
+              </div>
+            </div>
+
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Protein</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="protein">28</span>
+                <span class="value-unit">g</span>
+              </div>
+            </div>
+
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Carbohydrates</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="carbs">52</span>
+                <span class="value-unit">g</span>
+              </div>
+            </div>
+
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Total Fat</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="fat">14</span>
+                <span class="value-unit">g</span>
+              </div>
+            </div>
+
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Saturated Fat</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="satFat">4</span>
+                <span class="value-unit">g</span>
+              </div>
+            </div>
+
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Fiber</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="fiber">3</span>
+                <span class="value-unit">g</span>
+              </div>
+            </div>
+
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Sugar</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="sugar">2</span>
+                <span class="value-unit">g</span>
+              </div>
+            </div>
+
+            <div class="nutrition-item">
+              <div class="nutrition-label">
+                <span class="nutrition-name">Sodium</span>
+              </div>
+              <div class="nutrition-value">
+                <span class="value-number" id="sodium">680</span>
+                <span class="value-unit">mg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INGREDIENTS CARD -->
+      <div class="details-card">
+        <div class="details-card-header">
+          <h2>Ingredients</h2>
+          <span class="ingredient-count" id="ingredientCount">12 ingredients</span>
+        </div>
+        <div class="details-card-body">
+          <div class="ingredients-list" id="ingredientsList">
+            <span class="ingredient-tag">Basmati Rice</span>
+            <span class="ingredient-tag">Chicken</span>
+            <span class="ingredient-tag">Onions</span>
+            <span class="ingredient-tag">Tomatoes</span>
+            <span class="ingredient-tag">Yogurt</span>
+            <span class="ingredient-tag">Ginger</span>
+            <span class="ingredient-tag">Garlic</span>
+            <span class="ingredient-tag">Spices</span>
+            <span class="ingredient-tag">Ghee</span>
+            <span class="ingredient-tag">Mint</span>
+            <span class="ingredient-tag">Coriander</span>
+            <span class="ingredient-tag">Salt</span>
+          </div>
+
+          <div class="allergen-info">
+            <h3>Common Allergens Present:</h3>
+            <div class="allergen-tags" id="allergenTags">
+              <span class="allergen-tag warning">Dairy (Yogurt, Ghee)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADDITIONAL INFO -->
+    <section class="additional-info-section">
+      <div class="info-note">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <p><strong>Note:</strong> Nutritional values are estimates and may vary based on preparation methods and specific ingredients used. Always verify ingredients if you have severe allergies.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    © Nutrishield – Food Allergy and Nutrient Finder.
+  </footer>
+
+  <script src="food-details.js"></script>
+</body>
+</html>

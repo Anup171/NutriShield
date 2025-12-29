@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard | Nutrishield</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="dashboard-page">
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">N</div>
+      <div class="logo-text">
+        <div class="logo-text-main">Nutri<span>shield</span></div>
+        <div class="logo-tagline">Allergy-safe nutrition, simplified</div>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <a href="about.html">About</a>
+      <a href="#" id="logoutBtn">Log Out</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="dashboard-main">
+    <!-- SEARCH SECTION (TOP CENTER) -->
+    <section class="search-section-dash">
+      <h2 class="search-heading">Search for Food</h2>
+      <p class="search-subheading">Check nutritional information and allergen warnings</p>
+      
+      <div class="search-wrapper-dash">
+        <div class="search-box-dash">
+          <input
+            type="text"
+            class="search-input-dash"
+            id="searchInput"
+            placeholder="Search for any food (e.g., Chicken, Cheese, Sushi)..."
+            autocomplete="off"
+          />
+          <button class="search-btn-dash" id="searchBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            Search
+          </button>
+        </div>
+
+        <!-- AUTOCOMPLETE DROPDOWN -->
+        <div class="suggestions-dropdown-dash" id="suggestionsPanel"></div>
+      </div>
+    </section>
+
+    <!-- TWO COLUMN LAYOUT -->
+    <section class="dashboard-grid">
+      <!-- LEFT COLUMN: USER INFO + ALLERGIES -->
+      <div class="left-column">
+        <!-- USER ACCOUNT CARD -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>User Account</h3>
+            <span class="dash-badge">Profile</span>
+          </div>
+          <div class="dash-card-body">
+            <div class="info-row">
+              <span class="info-label">Name</span>
+              <span class="info-value" id="userName">Loading...</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Email</span>
+              <span class="info-value" id="userEmail">Loading...</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Allergies Tracked</span>
+              <span class="info-value" id="allergyCount">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALLERGIES CARD -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>Your Allergies</h3>
+            <span class="dash-badge">Watch List</span>
+          </div>
+          <div class="dash-card-body">
+            <p class="card-desc">Foods and ingredients you need to avoid</p>
+            <div class="allergies-pills" id="allergyList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: RECENT SEARCHES -->
+      <div class="right-column">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>Recent Searches</h3>
+            <span class="dash-badge">History</span>
+          </div>
+          <div class="dash-card-body">
+            <p class="card-desc">Tap a previous item to quickly view its details again.</p>
+            <div class="recent-searches" id="recentList">
+              <div class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <p>No searches yet. Start searching to see your history!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    © Nutrishield – Food Allergy and Nutrient Finder.
+  </footer>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
