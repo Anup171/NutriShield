@@ -1,11 +1,3 @@
-# 🎉 BACKEND SETUP COMPLETE!
-
-## What Has Been Created
-
-Your complete backend for the Food Allergy and Nutrient Finder is now ready! Here's what you have:
-
----
-
 ## 📁 File Structure Overview
 
 ```
@@ -31,10 +23,6 @@ backend/
 │   └── 📄 auth.js                  # JWT authentication
 │
 ├── 📄 README.md                    # Full documentation
-├── 📄 SETUP_GUIDE.md              # Detailed setup instructions
-├── 📄 QUICK_START_CHECKLIST.md    # Step-by-step checklist
-├── 📄 Postman_Collection.json     # API testing collection
-└── 📄 frontend-integration.js     # Frontend connection code
 
 After npm install:
 └── 📂 node_modules/               # Installed packages
