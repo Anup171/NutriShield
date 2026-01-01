@@ -33,14 +33,14 @@
      <label for="confirmPassword">Confirm password</label>
      <input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6" />
 
-     <label for="allergyDropdown">Known allergies</label>
+     <label for="allergyDropdown">Known allergies (Select all that apply)</label>
 
      <div id="selectedPills" class="selected-pills" aria-live="polite" aria-atomic="true"></div>
 
      <div class="multi-row">
        <div id="allergyDropdown" class="multi-dropdown" data-open="false">
          <div class="multi-control" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="allergy-list">
-           <div class="multi-value" id="selectedText">Select an option</div>
+           <div class="multi-value" id="selectedText">Select allergies</div>
            <div class="chev" aria-hidden="true">
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                <polyline points="6 9 12 15 18 9"></polyline>
@@ -49,56 +49,76 @@
          </div>
 
          <div id="allergy-list" class="options-panel" role="listbox" aria-label="Allergies list">
-           <!-- options (unchanged) -->
-           <label class="opt"><input type="checkbox" value="Milk — Cow's milk protein (casein / β-lactoglobulin)" /><span class="opt-label">Milk — Cow's milk protein (casein / β-lactoglobulin)</span></label>
-           <label class="opt"><input type="checkbox" value="Peanuts — Arachis hypogaea" /><span class="opt-label">Peanuts — Arachis hypogaea</span></label>
-           <label class="opt"><input type="checkbox" value="Soy — Glycine max" /><span class="opt-label">Soy — Glycine max</span></label>
-           <label class="opt"><input type="checkbox" value="Tree nuts — e.g., cashew (Anacardium occidentale)" /><span class="opt-label">Tree nuts — e.g., cashew (Anacardium occidentale)</span></label>
-           <label class="opt"><input type="checkbox" value="Eggs — ovalbumin / ovomucoid" /><span class="opt-label">Eggs — ovalbumin / ovomucoid</span></label>
-
-           <label class="opt"><input type="checkbox" value="Wheat/Gluten — gliadin" /><span class="opt-label">Wheat / Gluten — gliadin</span></label>
-           <label class="opt"><input type="checkbox" value="Fish — parvalbumins" /><span class="opt-label">Fish — parvalbumins</span></label>
-           <label class="opt"><input type="checkbox" value="Shellfish — Crustacea (shrimp, crab)" /><span class="opt-label">Shellfish — Crustacea (shrimp, crab)</span></label>
-           <label class="opt"><input type="checkbox" value="Sesame — Sesamum indicum" /><span class="opt-label">Sesame — Sesamum indicum</span></label>
-           <label class="opt"><input type="checkbox" value="Mustard — Sinapis alba" /><span class="opt-label">Mustard — Sinapis alba</span></label>
-
-           <label class="opt"><input type="checkbox" value="Crustacean — crab / lobster" /><span class="opt-label">Crustacean — crab / lobster</span></label>
-           <label class="opt"><input type="checkbox" value="Mollusks — clams / oysters" /><span class="opt-label">Mollusks — clams / oysters</span></label>
-           <label class="opt"><input type="checkbox" value="Corn — Zea mays" /><span class="opt-label">Corn — Zea mays</span></label>
-           <label class="opt"><input type="checkbox" value="Lupin — Lupinus spp." /><span class="opt-label">Lupin — Lupinus spp.</span></label>
-           <label class="opt"><input type="checkbox" value="Buckwheat — Fagopyrum esculentum" /><span class="opt-label">Buckwheat — Fagopyrum esculentum</span></label>
-           <label class="opt"><input type="checkbox" value="Pea/legume proteins — Pisum sativum / chickpea / lentil" /><span class="opt-label">Pea/legume proteins — Pisum sativum / chickpea / lentil</span></label>
-
-           <label class="opt"><input type="checkbox" value="Banana — latex-food cross-reactivity" /><span class="opt-label">Banana — latex-food cross-reactivity</span></label>
-           <label class="opt"><input type="checkbox" value="Avocado — latex-food cross-reactivity" /><span class="opt-label">Avocado — latex-food cross-reactivity</span></label>
-           <label class="opt"><input type="checkbox" value="Kiwi — Actinidia deliciosa (latex cross-reactivity)" /><span class="opt-label">Kiwi — Actinidia deliciosa</span></label>
-
-           <label class="opt"><input type="checkbox" value="Alpha-gal — galactose-α-1,3-galactose (red meat)" /><span class="opt-label">Alpha-gal — galactose-α-1,3-galactose (red meat)</span></label>
-           <label class="opt"><input type="checkbox" value="Gelatin — collagen-derived" /><span class="opt-label">Gelatin — collagen-derived</span></label>
-           <label class="opt"><input type="checkbox" value="Cocoa — Theobroma cacao" /><span class="opt-label">Cocoa — Theobroma cacao</span></label>
-           <label class="opt"><input type="checkbox" value="Pine nuts — Pinus spp." /><span class="opt-label">Pine nuts — Pinus spp.</span></label>
-
-           <label class="opt"><input type="checkbox" value="Garlic — Allium sativum" /><span class="opt-label">Garlic — Allium sativum</span></label>
-           <label class="opt"><input type="checkbox" value="Onion — Allium cepa" /><span class="opt-label">Onion — Allium cepa</span></label>
-           <label class="opt"><input type="checkbox" value="Tomato — Solanum lycopersicum" /><span class="opt-label">Tomato — Solanum lycopersicum</span></label>
-           <label class="opt"><input type="checkbox" value="Potato — Solanum tuberosum" /><span class="opt-label">Potato — Solanum tuberosum</span></label>
-
-           <label class="opt"><input type="checkbox" value="Oats — Avena sativa" /><span class="opt-label">Oats — Avena sativa</span></label>
-           <label class="opt"><input type="checkbox" value="Rice — Oryza sativa" /><span class="opt-label">Rice — Oryza sativa</span></label>
-           <label class="opt"><input type="checkbox" value="Quinoa — Chenopodium quinoa" /><span class="opt-label">Quinoa — Chenopodium quinoa</span></label>
-
-           <label class="opt"><input type="checkbox" value="Chickpeas — Cicer arietinum" /><span class="opt-label">Chickpeas — Cicer arietinum</span></label>
-           <label class="opt"><input type="checkbox" value="Lentils — Lens culinaris" /><span class="opt-label">Lentils — Lens culinaris</span></label>
-           <label class="opt"><input type="checkbox" value="Soybean — Glycine max" /><span class="opt-label">Soybean — Glycine max</span></label>
-
-           <label class="opt"><input id="otherCheckbox" type="checkbox" value="Other" /><span class="opt-label">Other (type below)</span></label>
+           <!-- STANDARDIZED ALLERGEN OPTIONS - Matches backend detection exactly -->
+           
+           <!-- Major Allergens (Top 8) -->
+           <div class="allergy-category">Major Allergens</div>
+           <label class="opt"><input type="checkbox" value="Milk" /><span class="opt-label">🥛 Milk & Dairy Products</span></label>
+           <label class="opt"><input type="checkbox" value="Eggs" /><span class="opt-label">🥚 Eggs</span></label>
+           <label class="opt"><input type="checkbox" value="Peanuts" /><span class="opt-label">🥜 Peanuts</span></label>
+           <label class="opt"><input type="checkbox" value="Tree Nuts" /><span class="opt-label">🌰 Tree Nuts (Almonds, Cashews, Walnuts, etc.)</span></label>
+           <label class="opt"><input type="checkbox" value="Fish" /><span class="opt-label">🐟 Fish</span></label>
+           <label class="opt"><input type="checkbox" value="Shellfish" /><span class="opt-label">🦐 Shellfish (Shrimp, Crab, Lobster)</span></label>
+           <label class="opt"><input type="checkbox" value="Wheat" /><span class="opt-label">🌾 Wheat</span></label>
+           <label class="opt"><input type="checkbox" value="Soy" /><span class="opt-label">🫘 Soy</span></label>
+           
+           <!-- Additional Common Allergens -->
+           <div class="allergy-category">Other Common Allergens</div>
+           <label class="opt"><input type="checkbox" value="Gluten" /><span class="opt-label">🍞 Gluten (Wheat, Barley, Rye)</span></label>
+           <label class="opt"><input type="checkbox" value="Sesame" /><span class="opt-label">Sesame Seeds</span></label>
+           <label class="opt"><input type="checkbox" value="Mustard" /><span class="opt-label">Mustard</span></label>
+           <label class="opt"><input type="checkbox" value="Corn" /><span class="opt-label">🌽 Corn</span></label>
+           
+           <!-- Legumes -->
+           <div class="allergy-category">Legumes</div>
+           <label class="opt"><input type="checkbox" value="Chickpeas" /><span class="opt-label">Chickpeas</span></label>
+           <label class="opt"><input type="checkbox" value="Lentils" /><span class="opt-label">Lentils</span></label>
+           <label class="opt"><input type="checkbox" value="Peas" /><span class="opt-label">Peas</span></label>
+           <label class="opt"><input type="checkbox" value="Beans" /><span class="opt-label">Beans</span></label>
+           
+           <!-- Seafood Details -->
+           <div class="allergy-category">Seafood (Specific)</div>
+           <label class="opt"><input type="checkbox" value="Crustaceans" /><span class="opt-label">Crustaceans (Crab, Lobster, Crawfish)</span></label>
+           <label class="opt"><input type="checkbox" value="Mollusks" /><span class="opt-label">Mollusks (Clams, Oysters, Squid)</span></label>
+           
+           <!-- Fruits -->
+           <div class="allergy-category">Fruits</div>
+           <label class="opt"><input type="checkbox" value="Banana" /><span class="opt-label">🍌 Banana</span></label>
+           <label class="opt"><input type="checkbox" value="Avocado" /><span class="opt-label">🥑 Avocado</span></label>
+           <label class="opt"><input type="checkbox" value="Kiwi" /><span class="opt-label">🥝 Kiwi</span></label>
+           <label class="opt"><input type="checkbox" value="Strawberry" /><span class="opt-label">🍓 Strawberry</span></label>
+           
+           <!-- Vegetables -->
+           <div class="allergy-category">Vegetables</div>
+           <label class="opt"><input type="checkbox" value="Tomato" /><span class="opt-label">🍅 Tomato</span></label>
+           <label class="opt"><input type="checkbox" value="Potato" /><span class="opt-label">🥔 Potato</span></label>
+           <label class="opt"><input type="checkbox" value="Garlic" /><span class="opt-label">🧄 Garlic</span></label>
+           <label class="opt"><input type="checkbox" value="Onion" /><span class="opt-label">🧅 Onion</span></label>
+           
+           <!-- Grains -->
+           <div class="allergy-category">Grains</div>
+           <label class="opt"><input type="checkbox" value="Oats" /><span class="opt-label">Oats</span></label>
+           <label class="opt"><input type="checkbox" value="Rice" /><span class="opt-label">🍚 Rice</span></label>
+           <label class="opt"><input type="checkbox" value="Barley" /><span class="opt-label">Barley</span></label>
+           <label class="opt"><input type="checkbox" value="Rye" /><span class="opt-label">Rye</span></label>
+           <label class="opt"><input type="checkbox" value="Quinoa" /><span class="opt-label">Quinoa</span></label>
+           <label class="opt"><input type="checkbox" value="Buckwheat" /><span class="opt-label">Buckwheat</span></label>
+           
+           <!-- Other -->
+           <div class="allergy-category">Other Allergens</div>
+           <label class="opt"><input type="checkbox" value="Gelatin" /><span class="opt-label">Gelatin</span></label>
+           <label class="opt"><input type="checkbox" value="Cocoa" /><span class="opt-label">🍫 Cocoa/Chocolate</span></label>
+           <label class="opt"><input type="checkbox" value="Red Meat" /><span class="opt-label">🥩 Red Meat (Alpha-gal)</span></label>
+           <label class="opt"><input type="checkbox" value="Lupin" /><span class="opt-label">Lupin</span></label>
+           
+           <label class="opt"><input id="otherCheckbox" type="checkbox" value="Other" /><span class="opt-label">➕ Other (type below)</span></label>
 
            <div id="otherInputRow" class="other-input-row" style="display:none;">
              <input id="otherInput" class="other-input" type="text" placeholder="Type your allergy, then press Add" />
              <button type="button" id="otherAdd" class="other-add">Add</button>
            </div>
 
-           <div id="otherError" class="other-error">Option already exists — please mention another not listed above.</div>
+           <div id="otherError" class="other-error">Option already exists — please select from the list above.</div>
          </div>
        </div>
      </div>
@@ -114,5 +134,24 @@
  </div>
 
  <script src="script.js"></script>
+ 
+ <style>
+   .allergy-category {
+     font-size: 11px;
+     font-weight: 700;
+     color: #64748b;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+     padding: 12px 16px 6px 16px;
+     margin-top: 8px;
+     background: #f8fafc;
+     border-top: 1px solid #e2e8f0;
+   }
+   
+   .allergy-category:first-child {
+     margin-top: 0;
+     border-top: none;
+   }
+ </style>
 </body>
 </html>

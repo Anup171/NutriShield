@@ -143,95 +143,138 @@ async function loadRecentSearches() {
   }
 }
 
-// Comprehensive food database - organized by category
+// COMPREHENSIVE FOOD DATABASE - Organized and Error-Free
 const foodDatabase = {
-  // Fruits
+  // 🍎 Fruits
   fruits: [
-    "Apple", "Banana", "Orange", "Mango", "Strawberry", "Blueberry", "Raspberry",
-    "Blackberry", "Grape", "Watermelon", "Cantaloupe", "Honeydew", "Pineapple",
-    "Papaya", "Kiwi", "Peach", "Plum", "Cherry", "Apricot", "Pear", "Pomegranate",
-    "Guava", "Lychee", "Dragon Fruit", "Passion Fruit", "Avocado", "Coconut",
-    "Dates", "Figs", "Lemon", "Lime", "Grapefruit", "Tangerine", "Clementine"
+    "Apple", "Apricot", "Avocado", "Banana", "Blackberry", "Blueberry", 
+    "Cantaloupe", "Cherry", "Clementine", "Coconut", "Cranberry",
+    "Dates", "Dragon Fruit", "Fig", "Grapefruit", "Grape", "Guava",
+    "Honeydew", "Kiwi", "Lemon", "Lime", "Lychee", "Mango",
+    "Orange", "Papaya", "Passion Fruit", "Peach", "Pear", "Pineapple",
+    "Plum", "Pomegranate", "Raspberry", "Strawberry", "Tangerine", "Watermelon"
   ],
   
-  // Vegetables
+  // 🥬 Vegetables
   vegetables: [
-    "Carrot", "Broccoli", "Cauliflower", "Spinach", "Kale", "Lettuce", "Cabbage",
-    "Brussels Sprouts", "Asparagus", "Celery", "Cucumber", "Zucchini", "Eggplant",
-    "Bell Pepper", "Tomato", "Onion", "Garlic", "Potato", "Sweet Potato", "Corn",
-    "Peas", "Green Beans", "Mushroom", "Radish", "Beetroot", "Turnip", "Pumpkin",
-    "Squash", "Okra", "Artichoke", "Leek", "Chard", "Arugula", "Bok Choy"
+    "Artichoke", "Arugula", "Asparagus", "Beetroot", "Bell Pepper",
+    "Bok Choy", "Broccoli", "Brussels Sprouts", "Cabbage", "Carrot",
+    "Cauliflower", "Celery", "Chard", "Corn", "Cucumber",
+    "Eggplant", "Garlic", "Green Beans", "Kale", "Leek", "Lettuce",
+    "Mushroom", "Okra", "Onion", "Peas", "Potato", "Pumpkin",
+    "Radish", "Spinach", "Squash", "Sweet Potato", "Tomato", "Turnip", "Zucchini"
   ],
   
-  // Proteins
-  proteins: [
-    "Chicken Breast", "Chicken Thigh", "Chicken Wings", "Ground Chicken", "Turkey",
-    "Beef Steak", "Ground Beef", "Beef Ribs", "Lamb", "Pork Chops", "Bacon",
-    "Ham", "Sausage", "Salmon", "Tuna", "Cod", "Tilapia", "Shrimp", "Crab",
-    "Lobster", "Scallops", "Eggs", "Tofu", "Tempeh", "Edamame", "Chickpeas",
-    "Black Beans", "Kidney Beans", "Lentils", "Pinto Beans"
+  // 🍖 Proteins - Meat
+  meat: [
+    "Bacon", "Beef Ribs", "Beef Steak", "Ground Beef", "Ham",
+    "Lamb Chops", "Pork Chops", "Sausage"
   ],
   
-  // Dairy
+  // 🍗 Proteins - Poultry
+  poultry: [
+    "Chicken Breast", "Chicken Thigh", "Chicken Wings", "Ground Chicken",
+    "Roasted Chicken", "Turkey", "Duck"
+  ],
+  
+  // 🐟 Proteins - Seafood
+  seafood: [
+    "Cod", "Crab", "Lobster", "Salmon", "Scallops", "Shrimp",
+    "Tilapia", "Tuna"
+  ],
+  
+  // 🫘 Proteins - Plant-Based
+  plantProtein: [
+    "Black Beans", "Chickpeas", "Edamame", "Kidney Beans",
+    "Lentils", "Pinto Beans", "Tempeh", "Tofu"
+  ],
+  
+  // 🥚 Eggs & Dairy
+  eggsAndDairy: [
+    "Eggs", "Scrambled Eggs", "Boiled Eggs", "Fried Eggs", "Omelet"
+  ],
+  
+  // 🥛 Dairy Products
   dairy: [
-    "Milk", "Whole Milk", "Skim Milk", "Almond Milk", "Soy Milk", "Oat Milk",
-    "Cheddar Cheese", "Mozzarella Cheese", "Parmesan Cheese", "Swiss Cheese",
-    "Feta Cheese", "Goat Cheese", "Cream Cheese", "Cottage Cheese", "Ricotta",
-    "Yogurt", "Greek Yogurt", "Butter", "Ghee", "Heavy Cream", "Sour Cream",
-    "Ice Cream", "Whipped Cream"
+    "Almond Milk", "Butter", "Cheddar Cheese", "Cottage Cheese",
+    "Cream Cheese", "Feta Cheese", "Ghee", "Goat Cheese",
+    "Greek Yogurt", "Heavy Cream", "Ice Cream", "Milk",
+    "Mozzarella Cheese", "Oat Milk", "Parmesan Cheese",
+    "Ricotta Cheese", "Skim Milk", "Sour Cream", "Soy Milk",
+    "Swiss Cheese", "Whipped Cream", "Whole Milk", "Yogurt"
   ],
   
-  // Grains & Carbs
+  // 🌾 Grains & Rice
   grains: [
-    "White Rice", "Brown Rice", "Basmati Rice", "Jasmine Rice", "Wild Rice",
-    "Quinoa", "Couscous", "Bulgur", "Oats", "Oatmeal", "Bread", "White Bread",
-    "Whole Wheat Bread", "Sourdough Bread", "Rye Bread", "Bagel", "English Muffin",
-    "Tortilla", "Pita Bread", "Naan", "Pasta", "Spaghetti", "Penne", "Fettuccine",
-    "Macaroni", "Ramen Noodles", "Udon Noodles", "Rice Noodles"
+    "Basmati Rice", "Brown Rice", "Bulgur", "Couscous",
+    "Jasmine Rice", "Oatmeal", "Oats", "Quinoa",
+    "White Rice", "Wild Rice"
   ],
   
-  // Indian Foods
+  // 🍞 Bread & Baked Goods
+  bread: [
+    "Bagel", "Baguette", "Bread", "Croissant", "English Muffin",
+    "Naan", "Pita Bread", "Rye Bread", "Sourdough Bread",
+    "Tortilla", "Whole Wheat Bread", "White Bread"
+  ],
+  
+  // 🍝 Pasta & Noodles
+  pasta: [
+    "Fettuccine", "Lasagna", "Macaroni", "Pasta", "Penne",
+    "Ramen Noodles", "Rice Noodles", "Spaghetti", "Udon Noodles"
+  ],
+  
+  // 🍛 Indian Cuisine
   indian: [
-    "Butter Chicken", "Chicken Tikka Masala", "Tandoori Chicken", "Chicken Curry",
-    "Paneer Tikka", "Palak Paneer", "Paneer Butter Masala", "Dal Makhani",
-    "Dal Tadka", "Chana Masala", "Aloo Gobi", "Biryani", "Chicken Biryani",
-    "Vegetable Biryani", "Samosa", "Pakora", "Dosa", "Idli", "Vada", "Uttapam",
-    "Chapati", "Roti", "Paratha", "Puri", "Bhatura", "Kulcha", "Raita",
-    "Chole Bhature", "Pav Bhaji", "Vada Pav", "Rajma", "Kadhi", "Khichdi"
+    "Aloo Gobi", "Biryani", "Butter Chicken", "Chana Masala",
+    "Chapati", "Chicken Biryani", "Chicken Curry", "Chicken Tikka Masala",
+    "Chole Bhature", "Dal Makhani", "Dal Tadka", "Dosa", "Idli",
+    "Kadhi", "Khichdi", "Kulcha", "Pakora", "Palak Paneer",
+    "Paneer Butter Masala", "Paneer Tikka", "Paratha", "Pav Bhaji",
+    "Puri", "Raita", "Rajma", "Roti", "Samosa", "Tandoori Chicken",
+    "Uttapam", "Vada", "Vada Pav", "Vegetable Biryani"
   ],
   
-  // Fast Food
+  // 🍕 Fast Food
   fastFood: [
-    "Pizza", "Cheese Pizza", "Pepperoni Pizza", "Margherita Pizza", "Burger",
-    "Cheeseburger", "Hamburger", "Chicken Burger", "Veggie Burger", "Hot Dog",
-    "French Fries", "Onion Rings", "Chicken Nuggets", "Fried Chicken",
-    "Fish and Chips", "Taco", "Burrito", "Quesadilla", "Nachos", "Sandwich",
-    "Club Sandwich", "BLT Sandwich", "Grilled Cheese", "Sushi", "California Roll",
-    "Tuna Roll", "Salmon Sashimi"
+    "BLT Sandwich", "Burger", "Burrito", "Cheeseburger",
+    "Chicken Burger", "Chicken Nuggets", "Club Sandwich",
+    "Fish and Chips", "French Fries", "Fried Chicken",
+    "Grilled Cheese Sandwich", "Hamburger", "Hot Dog",
+    "Nachos", "Onion Rings", "Pepperoni Pizza", "Pizza",
+    "Quesadilla", "Sandwich", "Taco", "Veggie Burger"
   ],
   
-  // Snacks & Sweets
-  snacks: [
-    "Potato Chips", "Tortilla Chips", "Pretzels", "Popcorn", "Trail Mix",
-    "Granola Bar", "Protein Bar", "Crackers", "Rice Cakes", "Peanut Butter",
-    "Almond Butter", "Chocolate", "Dark Chocolate", "Milk Chocolate", "Candy",
-    "Cookies", "Brownies", "Cake", "Cupcake", "Muffin", "Donut", "Pie",
-    "Cheesecake", "Pudding", "Jelly", "Jam"
-  ],
-  
-  // Beverages
-  beverages: [
-    "Coffee", "Espresso", "Latte", "Cappuccino", "Tea", "Green Tea", "Black Tea",
-    "Chai", "Hot Chocolate", "Orange Juice", "Apple Juice", "Cranberry Juice",
-    "Smoothie", "Protein Shake", "Milkshake", "Soda", "Energy Drink"
-  ],
-  
-  // International Cuisine
+  // 🍣 International Cuisine
   international: [
-    "Pad Thai", "Fried Rice", "Lo Mein", "Kung Pao Chicken", "Sweet and Sour Chicken",
-    "Spring Roll", "Sushi Roll", "Ramen", "Pho", "Tom Yum Soup", "Kimchi",
-    "Bibimbap", "Falafel", "Hummus", "Shawarma", "Kebab", "Lasagna", "Spaghetti Carbonara",
-    "Risotto", "Paella", "Enchiladas", "Tamales", "Ceviche", "Empanada"
+    "Bibimbap", "California Roll", "Ceviche", "Empanada",
+    "Enchiladas", "Falafel", "Fried Rice", "Hummus", "Kebab",
+    "Kimchi", "Kung Pao Chicken", "Lo Mein", "Pad Thai",
+    "Paella", "Pho", "Ramen", "Risotto", "Salmon Sashimi",
+    "Shawarma", "Spaghetti Carbonara", "Spring Roll", "Sushi",
+    "Sweet and Sour Chicken", "Tamales", "Tom Yum Soup", "Tuna Roll"
+  ],
+  
+  // 🍿 Snacks
+  snacks: [
+    "Almond Butter", "Crackers", "Granola Bar", "Peanut Butter",
+    "Popcorn", "Potato Chips", "Pretzels", "Protein Bar",
+    "Rice Cakes", "Tortilla Chips", "Trail Mix"
+  ],
+  
+  // 🍰 Desserts & Sweets
+  desserts: [
+    "Brownies", "Cake", "Candy", "Cheesecake", "Chocolate",
+    "Cookies", "Cupcake", "Dark Chocolate", "Donut",
+    "Jam", "Jelly", "Milk Chocolate", "Muffin", "Pie", "Pudding"
+  ],
+  
+  // ☕ Beverages
+  beverages: [
+    "Apple Juice", "Black Tea", "Cappuccino", "Chai", "Coffee",
+    "Cranberry Juice", "Energy Drink", "Espresso", "Green Tea",
+    "Hot Chocolate", "Latte", "Milkshake", "Orange Juice",
+    "Protein Shake", "Smoothie", "Soda", "Tea"
   ]
 };
 
@@ -286,14 +329,21 @@ function getCategoryLabel(category) {
   const labels = {
     fruits: '🍎 Fruit',
     vegetables: '🥬 Vegetable',
-    proteins: '🍖 Protein',
+    meat: '🍖 Meat',
+    poultry: '🍗 Poultry',
+    seafood: '🐟 Seafood',
+    plantProtein: '🫘 Plant Protein',
+    eggsAndDairy: '🥚 Eggs',
     dairy: '🥛 Dairy',
     grains: '🌾 Grain',
+    bread: '🍞 Bread',
+    pasta: '🍝 Pasta',
     indian: '🍛 Indian',
     fastFood: '🍔 Fast Food',
+    international: '🍣 International',
     snacks: '🍿 Snack',
-    beverages: '☕ Beverage',
-    international: '🌍 International'
+    desserts: '🍰 Dessert',
+    beverages: '☕ Beverage'
   };
   return labels[category] || '🍽️ Food';
 }
@@ -417,8 +467,9 @@ async function performSearch(foodName) {
 
     if (data.success && data.foods && data.foods.length > 0) {
       // Take the first result and redirect to details page
+      // PASS THE ORIGINAL SEARCH QUERY so history shows what user typed
       const firstFood = data.foods[0];
-      window.location.href = `food-details.html?foodId=${firstFood.foodId}&name=${encodeURIComponent(firstFood.label)}`;
+      window.location.href = `food-details.html?foodId=${firstFood.foodId}&name=${encodeURIComponent(foodName)}&searchQuery=${encodeURIComponent(foodName)}`;
     } else {
       alert('No food items found for: ' + foodName + '\n\nTry a different search term or check spelling.');
     }

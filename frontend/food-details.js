@@ -21,7 +21,8 @@ function getFoodInfoFromURL() {
   const params = new URLSearchParams(window.location.search);
   return {
     foodId: params.get('foodId'),
-    name: params.get('name') || 'Unknown Food'
+    name: params.get('name') || 'Unknown Food',
+    searchQuery: params.get('searchQuery') || params.get('name') || 'Unknown Food'
   };
 }
 
@@ -51,7 +52,8 @@ async function displayFoodDetails() {
       },
       body: JSON.stringify({
         foodId: foodInfo.foodId,
-        quantity: 100
+        quantity: 100,
+        searchQuery: foodInfo.searchQuery // Pass the original search query
       })
     });
 
@@ -132,45 +134,62 @@ async function displayFoodDetails() {
     if (food.allergenDetected && food.detectedAllergens && food.detectedAllergens.length > 0) {
       // Show prominent warning
       const warningDiv = document.getElementById('allergyWarning');
+      warningDiv.innerHTML = ''; // Clear existing content
       warningDiv.style.display = 'flex';
+      warningDiv.style.flexDirection = 'column';
       warningDiv.style.background = 'linear-gradient(135deg, #fee, #fdd)';
-      warningDiv.style.border = '2px solid #c00';
-      warningDiv.style.padding = '20px';
+      warningDiv.style.border = '3px solid #dc2626';
+      warningDiv.style.padding = '24px';
       warningDiv.style.borderRadius = '12px';
       warningDiv.style.marginTop = '20px';
-      warningDiv.style.boxShadow = '0 4px 12px rgba(200, 0, 0, 0.2)';
+      warningDiv.style.boxShadow = '0 6px 20px rgba(220, 38, 38, 0.3)';
       
-      document.getElementById('safeIndicator').style.display = 'none';
+      // Add main warning icon and title
+      const warningHeader = document.createElement('div');
+      warningHeader.style.display = 'flex';
+      warningHeader.style.alignItems = 'center';
+      warningHeader.style.gap = '12px';
+      warningHeader.style.marginBottom = '16px';
+      warningHeader.innerHTML = `
+        <span style="font-size: 32px;">⚠️</span>
+        <h3 style="margin: 0; color: #dc2626; font-size: 20px; font-weight: 700;">ALLERGY ALERT!</h3>
+      `;
+      warningDiv.appendChild(warningHeader);
       
-      const detectedContainer = document.getElementById('detectedAllergens');
-      detectedContainer.innerHTML = '';
+      // Add warning message
+      const warningText = document.createElement('p');
+      warningText.style.margin = '0 0 16px 0';
+      warningText.style.fontWeight = '600';
+      warningText.style.color = '#991b1b';
+      warningText.style.fontSize = '16px';
+      warningText.style.lineHeight = '1.5';
+      warningText.textContent = `This food contains ${food.detectedAllergens.length} allergen(s) that you're allergic to. Do NOT consume!`;
+      warningDiv.appendChild(warningText);
+      
+      // Add detected allergens
+      const detectedContainer = document.createElement('div');
       detectedContainer.style.display = 'flex';
       detectedContainer.style.flexWrap = 'wrap';
-      detectedContainer.style.gap = '8px';
-      detectedContainer.style.marginTop = '12px';
+      detectedContainer.style.gap = '10px';
       
       food.detectedAllergens.forEach(allergen => {
         const pill = document.createElement('span');
-        pill.className = 'detected-allergen-pill';
         pill.style.background = '#dc2626';
         pill.style.color = 'white';
-        pill.style.padding = '6px 12px';
-        pill.style.borderRadius = '6px';
-        pill.style.fontSize = '14px';
-        pill.style.fontWeight = '600';
+        pill.style.padding = '8px 16px';
+        pill.style.borderRadius = '8px';
+        pill.style.fontSize = '15px';
+        pill.style.fontWeight = '700';
         pill.style.textTransform = 'uppercase';
+        pill.style.letterSpacing = '0.5px';
+        pill.style.boxShadow = '0 2px 8px rgba(220, 38, 38, 0.4)';
         pill.textContent = `⚠️ ${allergen}`;
         detectedContainer.appendChild(pill);
       });
       
-      // Add extra warning text
-      const warningText = document.createElement('p');
-      warningText.style.marginTop = '12px';
-      warningText.style.fontWeight = 'bold';
-      warningText.style.color = '#c00';
-      warningText.style.fontSize = '14px';
-      warningText.textContent = `⚠️ ALLERGY WARNING: This food contains ${food.detectedAllergens.length} allergen(s) you're allergic to!`;
-      warningDiv.appendChild(warningText);
+      warningDiv.appendChild(detectedContainer);
+      
+      document.getElementById('safeIndicator').style.display = 'none';
       
     } else {
       // Show safe indicator
