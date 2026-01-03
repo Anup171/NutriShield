@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
+const { getUserWithAllergies, addUserAllergy } = require('../helpers/schemaHelpers');
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -36,9 +37,18 @@ router.post('/register', async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password,
-      allergies: allergies || []
+      password
     });
+
+    // Add allergies using new schema
+    if (allergies && Array.isArray(allergies) && allergies.length > 0) {
+      for (const allergen of allergies) {
+        await addUserAllergy(user._id, allergen, 'unknown');
+      }
+    }
+
+    // Get user with allergies
+    const userWithAllergies = await getUserWithAllergies(user._id);
 
     const token = generateToken(user._id);
 
@@ -47,10 +57,10 @@ router.post('/register', async (req, res) => {
       message: 'User registered successfully',
       token,
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        allergies: user.allergies
+        id: userWithAllergies._id,
+        name: userWithAllergies.name,
+        email: userWithAllergies.email,
+        allergies: userWithAllergies.allergies
       }
     });
   } catch (error) {
@@ -94,6 +104,9 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // Get user with allergies
+    const userWithAllergies = await getUserWithAllergies(user._id);
+
     const token = generateToken(user._id);
 
     res.status(200).json({
@@ -101,10 +114,10 @@ router.post('/login', async (req, res) => {
       message: 'Login successful',
       token,
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        allergies: user.allergies
+        id: userWithAllergies._id,
+        name: userWithAllergies.name,
+        email: userWithAllergies.email,
+        allergies: userWithAllergies.allergies
       }
     });
   } catch (error) {
@@ -121,7 +134,7 @@ router.post('/login', async (req, res) => {
 // @access  Private
 router.get('/me', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await getUserWithAllergies(req.user.id);
 
     res.status(200).json({
       success: true,

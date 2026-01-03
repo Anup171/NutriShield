@@ -24,15 +24,27 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     select: false
   },
-  allergies: [{
-    type: String,
-    lowercase: true,
-    trim: true
-  }],
-  createdAt: {
-    type: Date,
-    default: Date.now
+  profilePicture: {
+    type: String
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  preferences: {
+    dietType: {
+      type: String,
+      enum: ['omnivore', 'vegetarian', 'vegan', 'pescatarian', 'none'],
+      default: 'none'
+    },
+    measurementSystem: {
+      type: String,
+      enum: ['metric', 'imperial'],
+      default: 'metric'
+    }
   }
+}, {
+  timestamps: true
 });
 
 // Encrypt password before saving

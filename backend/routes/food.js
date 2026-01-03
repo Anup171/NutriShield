@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const User = require('../models/User');
-const SearchHistory = require('../models/SearchHistory');
 const { protect } = require('../middleware/auth');
+const { 
+  getUserWithAllergies, 
+  recordFoodDetection, 
+  getUserSearchHistory 
+} = require('../helpers/schemaHelpers');
+const UserFoodDetection = require('../models/UserFoodDetection');
 
 // STANDARDIZED ALLERGEN KEYWORDS - Perfectly matched with signup form
 const ALLERGEN_KEYWORDS = {
@@ -194,7 +198,7 @@ const ALLERGEN_KEYWORDS = {
 };
 
 // Helper function to check for allergens with PERFECT detection
-const checkForAllergens = (foodLabel, ingredients, healthLabels, category, userAllergies) => {
+const checkForAllergens = (foodLabel, ingredients, healthLabels, category, userAllergens) => {
   const detectedAllergens = [];
   
   // Create comprehensive search text from ALL available sources
@@ -215,9 +219,9 @@ const checkForAllergens = (foodLabel, ingredients, healthLabels, category, userA
   console.log('\n=== ALLERGEN DETECTION ===');
   console.log('Food:', foodLabel);
   console.log('Search text:', searchText);
-  console.log('User allergies:', userAllergies);
+  console.log('User allergies:', userAllergens);
 
-  userAllergies.forEach(allergy => {
+  userAllergens.forEach(allergy => {
     const allergyLower = allergy.toLowerCase().trim();
     
     // Get keywords for this allergy
@@ -341,7 +345,7 @@ router.post('/details', protect, async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.id);
+    const user = await getUserWithAllergies(req.user.id);
 
     const requestBody = {
       ingredients: [{
@@ -419,18 +423,23 @@ router.post('/details', protect, async (req, res) => {
       detectedAllergens: detectedAllergens
     };
 
-    // Save to search history with USER'S ORIGINAL SEARCH QUERY
-    await SearchHistory.create({
-      user: req.user.id,
-      foodName: foodName,
-      foodId: foodId,
-      calories: foodDetails.calories,
-      protein: foodDetails.nutrients.protein,
-      carbs: foodDetails.nutrients.carbs,
-      fats: foodDetails.nutrients.fat,
-      allergenDetected: foodDetails.allergenDetected,
-      detectedAllergens: detectedAllergens
-    });
+    // Use new schema helper to record detection
+    await recordFoodDetection(
+      req.user.id,
+      {
+        name: foodName,
+        externalId: foodId,
+        ingredients: ingredients,
+        category: category,
+        nutrition: {
+          calories: foodDetails.calories,
+          protein: foodDetails.nutrients.protein,
+          carbs: foodDetails.nutrients.carbs,
+          fats: foodDetails.nutrients.fat
+        }
+      },
+      user.allergies
+    );
 
     res.status(200).json({
       success: true,
@@ -455,9 +464,8 @@ router.get('/history', protect, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
 
-    const history = await SearchHistory.find({ user: req.user.id })
-      .sort({ searchedAt: -1 })
-      .limit(limit);
+    // Use new schema helper (returns backward compatible format)
+    const history = await getUserSearchHistory(req.user.id, limit);
 
     res.status(200).json({
       success: true,
@@ -480,7 +488,7 @@ router.get('/history', protect, async (req, res) => {
 // @access  Private
 router.delete('/history/:id', protect, async (req, res) => {
   try {
-    const historyItem = await SearchHistory.findById(req.params.id);
+    const historyItem = await UserFoodDetection.findById(req.params.id);
 
     if (!historyItem) {
       return res.status(404).json({
@@ -489,7 +497,7 @@ router.delete('/history/:id', protect, async (req, res) => {
       });
     }
 
-    if (historyItem.user.toString() !== req.user.id) {
+    if (historyItem.userId.toString() !== req.user.id) {
       return res.status(401).json({
         success: false,
         message: 'Not authorized to delete this item'
@@ -518,7 +526,7 @@ router.delete('/history/:id', protect, async (req, res) => {
 // @access  Private
 router.delete('/history', protect, async (req, res) => {
   try {
-    const result = await SearchHistory.deleteMany({ user: req.user.id });
+    const result = await UserFoodDetection.deleteMany({ userId: req.user.id });
 
     res.status(200).json({
       success: true,

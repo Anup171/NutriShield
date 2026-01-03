@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
+const { 
+  getUserWithAllergies, 
+  addUserAllergy, 
+  removeUserAllergy 
+} = require('../helpers/schemaHelpers');
 
 // @route   GET /api/users/profile
 // @desc    Get user profile
 // @access  Private
 router.get('/profile', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await getUserWithAllergies(req.user.id);
 
     res.status(200).json({
       success: true,
@@ -43,14 +48,16 @@ router.put('/profile', protect, async (req, res) => {
 
     await user.save();
 
+    const userWithAllergies = await getUserWithAllergies(req.user.id);
+
     res.status(200).json({
       success: true,
       message: 'Profile updated successfully',
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        allergies: user.allergies
+        id: userWithAllergies._id,
+        name: userWithAllergies.name,
+        email: userWithAllergies.email,
+        allergies: userWithAllergies.allergies
       }
     });
   } catch (error) {
@@ -67,7 +74,7 @@ router.put('/profile', protect, async (req, res) => {
 // @access  Private
 router.get('/allergies', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await getUserWithAllergies(req.user.id);
 
     res.status(200).json({
       success: true,
@@ -87,7 +94,7 @@ router.get('/allergies', protect, async (req, res) => {
 // @access  Private
 router.post('/allergies', protect, async (req, res) => {
   try {
-    const { allergy } = req.body;
+    const { allergy, severity } = req.body;
 
     if (!allergy) {
       return res.status(400).json({
@@ -96,18 +103,8 @@ router.post('/allergies', protect, async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.id);
-    const allergyLower = allergy.toLowerCase().trim();
-
-    if (user.allergies.includes(allergyLower)) {
-      return res.status(400).json({
-        success: false,
-        message: 'This allergy is already in your list'
-      });
-    }
-
-    user.allergies.push(allergyLower);
-    await user.save();
+    await addUserAllergy(req.user.id, allergy, severity || 'unknown');
+    const user = await getUserWithAllergies(req.user.id);
 
     res.status(200).json({
       success: true,
@@ -115,6 +112,12 @@ router.post('/allergies', protect, async (req, res) => {
       allergies: user.allergies
     });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'This allergy is already in your list'
+      });
+    }
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -128,14 +131,9 @@ router.post('/allergies', protect, async (req, res) => {
 // @access  Private
 router.delete('/allergies/:allergy', protect, async (req, res) => {
   try {
-    const allergyToRemove = req.params.allergy.toLowerCase().trim();
-    const user = await User.findById(req.user.id);
-
-    user.allergies = user.allergies.filter(
-      allergy => allergy !== allergyToRemove
-    );
-
-    await user.save();
+    const allergyToRemove = req.params.allergy;
+    await removeUserAllergy(req.user.id, allergyToRemove);
+    const user = await getUserWithAllergies(req.user.id);
 
     res.status(200).json({
       success: true,
@@ -165,13 +163,17 @@ router.put('/allergies', protect, async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.id);
+    const Allergy = require('../models/Allergy');
+    
+    // Remove all existing allergies
+    await Allergy.deleteMany({ userId: req.user.id });
 
-    user.allergies = allergies.map(allergy => 
-      allergy.toLowerCase().trim()
-    );
+    // Add new allergies
+    for (const allergen of allergies) {
+      await addUserAllergy(req.user.id, allergen, 'unknown');
+    }
 
-    await user.save();
+    const user = await getUserWithAllergies(req.user.id);
 
     res.status(200).json({
       success: true,
