@@ -8,6 +8,7 @@ const Allergy = require('../models/Allergy');
 const Food = require('../models/Food');
 const NutritionInfo = require('../models/NutritionInfo');
 const UserFoodDetection = require('../models/UserFoodDetection');
+const { checkForAllergens } = require('./allergenDetector');
 
 /**
  * Get user with all their allergies
@@ -119,21 +120,18 @@ async function recordFoodDetection(userId, foodData, userAllergens = []) {
   // Get or create food
   const food = await getOrCreateFood(foodData);
   
-  // Check for allergens in ingredients
-  const detectedAllergens = [];
-  const ingredients = food.ingredients || [];
+  // Use comprehensive allergen detection system
+  const detectedAllergenNames = checkForAllergens(
+    food.name,
+    food.ingredients || [],
+    userAllergens
+  );
   
-  for (const userAllergen of userAllergens) {
-    for (const ingredient of ingredients) {
-      if (ingredient.toLowerCase().includes(userAllergen.toLowerCase())) {
-        detectedAllergens.push({
-          allergen: userAllergen,
-          source: 'ingredient'
-        });
-        break;
-      }
-    }
-  }
+  // Format detected allergens for database
+  const detectedAllergens = detectedAllergenNames.map(allergen => ({
+    allergen: allergen,
+    source: 'ingredient'
+  }));
   
   // Create detection record
   const detection = await UserFoodDetection.create({

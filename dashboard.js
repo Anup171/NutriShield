@@ -57,22 +57,45 @@ async function displayUserInfo() {
   }
 }
 
-// Display allergies
+// Display allergies with scientific formatting
 function displayAllergies(allergies) {
   const allergyListEl = document.getElementById('allergyList');
   
   if (!allergies || allergies.length === 0) {
-    allergyListEl.innerHTML = '<div class="empty-allergies">No allergies listed</div>';
+    allergyListEl.innerHTML = '<div class="empty-allergies"><span class="empty-icon">🔬</span><span>No allergen sensitivities configured</span></div>';
     return;
   }
 
   allergyListEl.innerHTML = '';
   allergies.forEach(allergy => {
     const pill = document.createElement('span');
-    pill.className = 'allergy-pill-dash';
-    pill.textContent = allergy;
+    pill.className = 'allergy-pill-dash scientific-allergy-pill';
+    
+    // Add icon based on allergen type
+    const icon = getAllergenIcon(allergy);
+    pill.innerHTML = `<span class="allergen-icon">${icon}</span><span class="allergen-text">${allergy}</span>`;
+    
     allergyListEl.appendChild(pill);
   });
+}
+
+// Get scientific icon for each allergen
+function getAllergenIcon(allergen) {
+  const iconMap = {
+    'milk': '🥛', 'eggs': '🥚', 'peanuts': '🥜', 'tree nuts': '🌰',
+    'fish': '🐟', 'shellfish': '🦐', 'wheat': '🌾', 'soy': '🫘',
+    'sesame': '🫘', 'gluten': '🌾', 'corn': '🌽',
+    'chickpeas': '🫘', 'lentils': '🫘', 'peas': '🫘', 'beans': '🫘',
+    'crustaceans': '🦐', 'mollusks': '🦪',
+    'banana': '🍌', 'avocado': '🥑', 'kiwi': '🥝', 'strawberry': '🍓',
+    'tomato': '🍅', 'potato': '🥔', 'garlic': '🧄', 'onion': '🧅',
+    'oats': '🌾', 'rice': '🍚', 'barley': '🌾', 'rye': '🌾',
+    'quinoa': '🌾', 'buckwheat': '🌾',
+    'gelatin': '🔬', 'cocoa': '🍫', 'red meat': '🥩', 'lupin': '🫘'
+  };
+  
+  const key = allergen.toLowerCase();
+  return iconMap[key] || '⚠️';
 }
 
 // Load recent searches from backend
@@ -95,11 +118,9 @@ async function loadRecentSearches() {
         const item = document.createElement('div');
         item.className = 'recent-item-dash';
         
-        // Display food name or 'Unknown Food' if not available
         const displayName = search.foodName || 'Unknown Food';
         const displayTime = search.searchedAt ? getTimeAgo(new Date(search.searchedAt)) : 'Recently';
         
-        // Add allergen indicator if detected
         const allergenBadge = search.allergenDetected 
           ? `<span class="allergen-indicator-badge">⚠️</span>` 
           : '';
@@ -112,7 +133,6 @@ async function loadRecentSearches() {
           <span class="recent-time-dash">${displayTime}</span>
         `;
         
-        // Only make clickable if we have a valid foodId
         if (search.foodId) {
           item.style.cursor = 'pointer';
           item.addEventListener('click', () => {
@@ -143,155 +163,40 @@ async function loadRecentSearches() {
   }
 }
 
-// COMPREHENSIVE FOOD DATABASE - Organized and Error-Free
-const foodDatabase = {
-  // 🍎 Fruits
-  fruits: [
-    "Apple", "Apricot", "Avocado", "Banana", "Blackberry", "Blueberry", 
-    "Cantaloupe", "Cherry", "Clementine", "Coconut", "Cranberry",
-    "Dates", "Dragon Fruit", "Fig", "Grapefruit", "Grape", "Guava",
-    "Honeydew", "Kiwi", "Lemon", "Lime", "Lychee", "Mango",
-    "Orange", "Papaya", "Passion Fruit", "Peach", "Pear", "Pineapple",
-    "Plum", "Pomegranate", "Raspberry", "Strawberry", "Tangerine", "Watermelon"
-  ],
-  
-  // 🥬 Vegetables
-  vegetables: [
-    "Artichoke", "Arugula", "Asparagus", "Beetroot", "Bell Pepper",
-    "Bok Choy", "Broccoli", "Brussels Sprouts", "Cabbage", "Carrot",
-    "Cauliflower", "Celery", "Chard", "Corn", "Cucumber",
-    "Eggplant", "Garlic", "Green Beans", "Kale", "Leek", "Lettuce",
-    "Mushroom", "Okra", "Onion", "Peas", "Potato", "Pumpkin",
-    "Radish", "Spinach", "Squash", "Sweet Potato", "Tomato", "Turnip", "Zucchini"
-  ],
-  
-  // 🍖 Proteins - Meat
-  meat: [
-    "Bacon", "Beef Ribs", "Beef Steak", "Ground Beef", "Ham",
-    "Lamb Chops", "Pork Chops", "Sausage"
-  ],
-  
-  // 🍗 Proteins - Poultry
-  poultry: [
-    "Chicken Breast", "Chicken Thigh", "Chicken Wings", "Ground Chicken",
-    "Roasted Chicken", "Turkey", "Duck"
-  ],
-  
-  // 🐟 Proteins - Seafood
-  seafood: [
-    "Cod", "Crab", "Lobster", "Salmon", "Scallops", "Shrimp",
-    "Tilapia", "Tuna"
-  ],
-  
-  // 🫘 Proteins - Plant-Based
-  plantProtein: [
-    "Black Beans", "Chickpeas", "Edamame", "Kidney Beans",
-    "Lentils", "Pinto Beans", "Tempeh", "Tofu"
-  ],
-  
-  // 🥚 Eggs & Dairy
-  eggsAndDairy: [
-    "Eggs", "Scrambled Eggs", "Boiled Eggs", "Fried Eggs", "Omelet"
-  ],
-  
-  // 🥛 Dairy Products
-  dairy: [
-    "Almond Milk", "Butter", "Cheddar Cheese", "Cottage Cheese",
-    "Cream Cheese", "Feta Cheese", "Ghee", "Goat Cheese",
-    "Greek Yogurt", "Heavy Cream", "Ice Cream", "Milk",
-    "Mozzarella Cheese", "Oat Milk", "Parmesan Cheese",
-    "Ricotta Cheese", "Skim Milk", "Sour Cream", "Soy Milk",
-    "Swiss Cheese", "Whipped Cream", "Whole Milk", "Yogurt"
-  ],
-  
-  // 🌾 Grains & Rice
-  grains: [
-    "Basmati Rice", "Brown Rice", "Bulgur", "Couscous",
-    "Jasmine Rice", "Oatmeal", "Oats", "Quinoa",
-    "White Rice", "Wild Rice"
-  ],
-  
-  // 🍞 Bread & Baked Goods
-  bread: [
-    "Bagel", "Baguette", "Bread", "Croissant", "English Muffin",
-    "Naan", "Pita Bread", "Rye Bread", "Sourdough Bread",
-    "Tortilla", "Whole Wheat Bread", "White Bread"
-  ],
-  
-  // 🍝 Pasta & Noodles
-  pasta: [
-    "Fettuccine", "Lasagna", "Macaroni", "Pasta", "Penne",
-    "Ramen Noodles", "Rice Noodles", "Spaghetti", "Udon Noodles"
-  ],
-  
-  // 🍛 Indian Cuisine
-  indian: [
-    "Aloo Gobi", "Biryani", "Butter Chicken", "Chana Masala",
-    "Chapati", "Chicken Biryani", "Chicken Curry", "Chicken Tikka Masala",
-    "Chole Bhature", "Dal Makhani", "Dal Tadka", "Dosa", "Idli",
-    "Kadhi", "Khichdi", "Kulcha", "Pakora", "Palak Paneer",
-    "Paneer Butter Masala", "Paneer Tikka", "Paratha", "Pav Bhaji",
-    "Puri", "Raita", "Rajma", "Roti", "Samosa", "Tandoori Chicken",
-    "Uttapam", "Vada", "Vada Pav", "Vegetable Biryani"
-  ],
-  
-  // 🍕 Fast Food
-  fastFood: [
-    "BLT Sandwich", "Burger", "Burrito", "Cheeseburger",
-    "Chicken Burger", "Chicken Nuggets", "Club Sandwich",
-    "Fish and Chips", "French Fries", "Fried Chicken",
-    "Grilled Cheese Sandwich", "Hamburger", "Hot Dog",
-    "Nachos", "Onion Rings", "Pepperoni Pizza", "Pizza",
-    "Quesadilla", "Sandwich", "Taco", "Veggie Burger"
-  ],
-  
-  // 🍣 International Cuisine
-  international: [
-    "Bibimbap", "California Roll", "Ceviche", "Empanada",
-    "Enchiladas", "Falafel", "Fried Rice", "Hummus", "Kebab",
-    "Kimchi", "Kung Pao Chicken", "Lo Mein", "Pad Thai",
-    "Paella", "Pho", "Ramen", "Risotto", "Salmon Sashimi",
-    "Shawarma", "Spaghetti Carbonara", "Spring Roll", "Sushi",
-    "Sweet and Sour Chicken", "Tamales", "Tom Yum Soup", "Tuna Roll"
-  ],
-  
-  // 🍿 Snacks
-  snacks: [
-    "Almond Butter", "Crackers", "Granola Bar", "Peanut Butter",
-    "Popcorn", "Potato Chips", "Pretzels", "Protein Bar",
-    "Rice Cakes", "Tortilla Chips", "Trail Mix"
-  ],
-  
-  // 🍰 Desserts & Sweets
-  desserts: [
-    "Brownies", "Cake", "Candy", "Cheesecake", "Chocolate",
-    "Cookies", "Cupcake", "Dark Chocolate", "Donut",
-    "Jam", "Jelly", "Milk Chocolate", "Muffin", "Pie", "Pudding"
-  ],
-  
-  // ☕ Beverages
-  beverages: [
-    "Apple Juice", "Black Tea", "Cappuccino", "Chai", "Coffee",
-    "Cranberry Juice", "Energy Drink", "Espresso", "Green Tea",
-    "Hot Chocolate", "Latte", "Milkshake", "Orange Juice",
-    "Protein Shake", "Smoothie", "Soda", "Tea"
-  ]
+// Get all foods from database (loaded from foodDatabase.js)
+const allFoods = getAllFoods();
+
+// Category icons mapping
+const categoryIcons = {
+  dairy: '🥛',
+  eggs: '🥚',
+  peanuts: '🥜',
+  treeNuts: '🌰',
+  fish: '🐟',
+  shellfish: '🦐',
+  wheat: '🌾',
+  soy: '🫘',
+  legumes: '🫘',
+  grains: '🌾',
+  vegetables: '🥬',
+  fruits: '🍎',
+  poultry: '🍗',
+  redMeat: '🥩',
+  dishes: '🍽️',
+  desserts: '🧁',
+  beverages: '☕',
+  condiments: '🥫'
 };
 
-// Flatten all foods into single array with categories
-const allFoods = [];
-Object.keys(foodDatabase).forEach(category => {
-  foodDatabase[category].forEach(food => {
-    allFoods.push({
-      name: food,
-      category: category,
-      searchText: food.toLowerCase()
-    });
-  });
-});
-
-// Sort alphabetically
-allFoods.sort((a, b) => a.name.localeCompare(b.name));
+// Get category label with icon
+function getCategoryLabel(category) {
+  const icon = categoryIcons[category] || '🍽️';
+  const label = category
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, str => str.toUpperCase())
+    .trim();
+  return `${icon} ${label}`;
+}
 
 // Autocomplete functionality
 const searchInput = document.getElementById('searchInput');
@@ -323,29 +228,6 @@ function highlightMatch(text, query) {
   if (!query) return text;
   const regex = new RegExp(`(${query})`, 'gi');
   return text.replace(regex, '<strong>$1</strong>');
-}
-
-function getCategoryLabel(category) {
-  const labels = {
-    fruits: '🍎 Fruit',
-    vegetables: '🥬 Vegetable',
-    meat: '🍖 Meat',
-    poultry: '🍗 Poultry',
-    seafood: '🐟 Seafood',
-    plantProtein: '🫘 Plant Protein',
-    eggsAndDairy: '🥚 Eggs',
-    dairy: '🥛 Dairy',
-    grains: '🌾 Grain',
-    bread: '🍞 Bread',
-    pasta: '🍝 Pasta',
-    indian: '🍛 Indian',
-    fastFood: '🍔 Fast Food',
-    international: '🍣 International',
-    snacks: '🍿 Snack',
-    desserts: '🍰 Dessert',
-    beverages: '☕ Beverage'
-  };
-  return labels[category] || '🍽️ Food';
 }
 
 searchInput.addEventListener('input', (e) => {
@@ -415,21 +297,17 @@ function navigateSuggestions(direction) {
   const suggestions = suggestionsPanel.querySelectorAll('.suggestion-item-dash');
   if (suggestions.length === 0) return;
 
-  // Remove previous selection
   if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
     suggestions[selectedIndex].classList.remove('selected');
   }
 
-  // Update index
   selectedIndex += direction;
   if (selectedIndex < 0) selectedIndex = suggestions.length - 1;
   if (selectedIndex >= suggestions.length) selectedIndex = 0;
 
-  // Add new selection
   suggestions[selectedIndex].classList.add('selected');
   suggestions[selectedIndex].scrollIntoView({ block: 'nearest' });
 
-  // Update input
   searchInput.value = suggestions[selectedIndex].getAttribute('data-value');
 }
 
@@ -444,7 +322,6 @@ searchBtn.addEventListener('click', () => {
 });
 
 async function performSearch(foodName) {
-  // Show loading state
   searchBtn.disabled = true;
   searchBtn.innerHTML = `
     <svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -455,7 +332,6 @@ async function performSearch(foodName) {
   `;
 
   try {
-    // Search for food using backend API
     const response = await fetch(`${API_URL}/food/search?query=${encodeURIComponent(foodName)}`, {
       method: 'GET',
       headers: {
@@ -466,8 +342,6 @@ async function performSearch(foodName) {
     const data = await response.json();
 
     if (data.success && data.foods && data.foods.length > 0) {
-      // Take the first result and redirect to details page
-      // PASS THE ORIGINAL SEARCH QUERY so history shows what user typed
       const firstFood = data.foods[0];
       window.location.href = `food-details.html?foodId=${firstFood.foodId}&name=${encodeURIComponent(foodName)}&searchQuery=${encodeURIComponent(foodName)}`;
     } else {
@@ -477,7 +351,6 @@ async function performSearch(foodName) {
     console.error('Search error:', error);
     alert('Error searching for food. Please check your connection and try again.');
   } finally {
-    // Reset button state
     searchBtn.disabled = false;
     searchBtn.innerHTML = `
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -526,7 +399,7 @@ document.getElementById('logoutBtn').addEventListener('click', (e) => {
 displayUserInfo();
 loadRecentSearches();
 
-// Add some CSS for spinner animation and styling
+// Add spinner animation CSS
 const style = document.createElement('style');
 style.textContent = `
   @keyframes spin {
@@ -555,7 +428,7 @@ style.textContent = `
     font-size: 0.75rem;
     color: #64748b;
     margin-left: 12px;
-    whitespace: nowrap;
+    white-space: nowrap;
   }
   .recent-item-content {
     display: flex;
@@ -573,5 +446,304 @@ style.textContent = `
     height: 20px;
     font-size: 12px;
   }
+  
+  /* Scientific Allergy Pills */
+  .scientific-allergy-pill {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px;
+    box-shadow: 0 2px 5px rgba(59,130,246,0.25);
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  
+  .scientific-allergy-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(59,130,246,0.35);
+  }
+  
+  .allergen-icon {
+    font-size: 16px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+  }
+  
+  .allergen-text {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  
+  .empty-allergies {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 13px;
+    font-style: italic;
+    border: 1px dashed #cbd5e1;
+  }
+  
+  .empty-icon {
+    font-size: 20px;
+    opacity: 0.6;
+  }
 `;
 document.head.appendChild(style);
+
+// ========================================
+// CLEAR HISTORY FUNCTIONALITY
+// ========================================
+document.getElementById('clearHistoryBtn').addEventListener('click', async () => {
+  if (!confirm('Are you sure you want to clear all your search history? This action cannot be undone.')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/food/history`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      showToast('✓ Search history cleared successfully', 'success');
+      loadRecentSearches();
+    } else {
+      throw new Error(data.message || 'Failed to clear history');
+    }
+  } catch (error) {
+    console.error('Error clearing history:', error);
+    showToast('✗ Failed to clear history. Please try again.', 'error');
+  }
+});
+
+// ========================================
+// MANAGE ALLERGIES MODAL FUNCTIONALITY
+// ========================================
+
+const ALLERGEN_DATABASE = {
+  'FDA Priority Allergens': [
+    { value: 'Milk', label: 'Milk & Dairy Products', detail: 'Lactose, Casein, Whey proteins' },
+    { value: 'Eggs', label: 'Eggs', detail: 'Ovalbumin, Ovomucoid proteins' },
+    { value: 'Peanuts', label: 'Peanuts', detail: 'Arachis hypogaea' },
+    { value: 'Tree Nuts', label: 'Tree Nuts', detail: 'Almonds, Cashews, Walnuts, etc.' },
+    { value: 'Fish', label: 'Fish (Finned)', detail: 'All finned species' },
+    { value: 'Shellfish', label: 'Shellfish', detail: 'Crustaceans & Mollusks' },
+    { value: 'Wheat', label: 'Wheat', detail: 'Triticum species, gluten' },
+    { value: 'Soy', label: 'Soy (Soybean)', detail: 'Glycine max' },
+    { value: 'Sesame', label: 'Sesame Seeds', detail: 'Sesamum indicum' }
+  ],
+  'Common Allergens': [
+    { value: 'Gluten', label: 'Gluten', detail: 'Wheat, Barley, Rye' },
+    { value: 'Mustard', label: 'Mustard', detail: 'Brassica species' },
+    { value: 'Corn', label: 'Corn (Maize)', detail: 'Zea mays' },
+    { value: 'Lupin', label: 'Lupin', detail: 'Lupinus species' }
+  ],
+  'Legumes': [
+    { value: 'Chickpeas', label: 'Chickpeas', detail: 'Cicer arietinum' },
+    { value: 'Lentils', label: 'Lentils', detail: 'Lens culinaris' },
+    { value: 'Peas', label: 'Peas', detail: 'Pisum sativum' },
+    { value: 'Beans', label: 'Beans', detail: 'Common beans' }
+  ],
+  'Seafood': [
+    { value: 'Crustaceans', label: 'Crustaceans', detail: 'Shrimp, Crab, Lobster' },
+    { value: 'Mollusks', label: 'Mollusks', detail: 'Clams, Oysters, Squid' }
+  ],
+  'Grains': [
+    { value: 'Oats', label: 'Oats', detail: 'Avena sativa' },
+    { value: 'Rice', label: 'Rice', detail: 'Oryza sativa' },
+    { value: 'Barley', label: 'Barley', detail: 'Hordeum vulgare' },
+    { value: 'Rye', label: 'Rye', detail: 'Secale cereale' },
+    { value: 'Quinoa', label: 'Quinoa', detail: 'Chenopodium quinoa' },
+    { value: 'Buckwheat', label: 'Buckwheat', detail: 'Fagopyrum esculentum' }
+  ],
+  'Fruits & Vegetables': [
+    { value: 'Banana', label: 'Banana', detail: 'Latex cross-reactivity' },
+    { value: 'Avocado', label: 'Avocado', detail: 'Latex-fruit syndrome' },
+    { value: 'Kiwi', label: 'Kiwi Fruit', detail: 'Actinidia deliciosa' },
+    { value: 'Strawberry', label: 'Strawberry', detail: 'Fragaria × ananassa' },
+    { value: 'Tomato', label: 'Tomato', detail: 'Nightshade family' },
+    { value: 'Potato', label: 'Potato', detail: 'Solanine content' },
+    { value: 'Garlic', label: 'Garlic', detail: 'Allium sativum' },
+    { value: 'Onion', label: 'Onion', detail: 'Allium cepa' }
+  ],
+  'Other': [
+    { value: 'Gelatin', label: 'Gelatin', detail: 'Animal-derived collagen' },
+    { value: 'Cocoa', label: 'Cocoa/Chocolate', detail: 'Theobroma cacao' },
+    { value: 'Red Meat', label: 'Red Meat', detail: 'Alpha-gal syndrome' }
+  ]
+};
+
+let selectedAllergies = [];
+
+document.getElementById('manageAllergiesBtn').addEventListener('click', () => {
+  const currentUser = getCurrentUser();
+  selectedAllergies = currentUser?.allergies ? [...currentUser.allergies] : [];
+  renderAllergenCategories();
+  document.getElementById('allergiesModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+});
+
+function closeModal() {
+  document.getElementById('allergiesModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+
+document.getElementById('allergiesModal').addEventListener('click', (e) => {
+  if (e.target.id === 'allergiesModal') {
+    closeModal();
+  }
+});
+
+function renderAllergenCategories(searchTerm = '') {
+  const container = document.getElementById('allergenCategoriesModal');
+  container.innerHTML = '';
+
+  Object.entries(ALLERGEN_DATABASE).forEach(([category, allergens]) => {
+    const filtered = searchTerm 
+      ? allergens.filter(a => 
+          a.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          a.detail.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : allergens;
+
+    if (filtered.length === 0) return;
+
+    const categoryEl = document.createElement('div');
+    categoryEl.className = 'allergen-category-modal';
+    
+    const categoryHeader = document.createElement('div');
+    categoryHeader.className = 'category-header-modal';
+    categoryHeader.textContent = category;
+    categoryEl.appendChild(categoryHeader);
+
+    filtered.forEach(allergen => {
+      const allergenEl = document.createElement('label');
+      allergenEl.className = 'allergen-option-modal';
+      
+      const isSelected = selectedAllergies.includes(allergen.value);
+      if (isSelected) {
+        allergenEl.classList.add('selected');
+      }
+
+      allergenEl.innerHTML = `
+        <input type="checkbox" value="${allergen.value}" ${isSelected ? 'checked' : ''} />
+        <div class="allergen-info">
+          <span class="allergen-label">${allergen.label}</span>
+          <span class="allergen-detail-text">${allergen.detail}</span>
+        </div>
+        <div class="check-indicator">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+      `;
+
+      allergenEl.querySelector('input').addEventListener('change', (e) => {
+        if (e.target.checked) {
+          if (!selectedAllergies.includes(allergen.value)) {
+            selectedAllergies.push(allergen.value);
+          }
+          allergenEl.classList.add('selected');
+        } else {
+          selectedAllergies = selectedAllergies.filter(a => a !== allergen.value);
+          allergenEl.classList.remove('selected');
+        }
+      });
+
+      categoryEl.appendChild(allergenEl);
+    });
+
+    container.appendChild(categoryEl);
+  });
+
+  if (container.children.length === 0) {
+    container.innerHTML = '<div class="no-results">No allergens found matching your search.</div>';
+  }
+}
+
+document.getElementById('allergenSearchInput').addEventListener('input', (e) => {
+  renderAllergenCategories(e.target.value.trim());
+});
+
+document.getElementById('saveAllergiesBtn').addEventListener('click', async () => {
+  const saveBtn = document.getElementById('saveAllergiesBtn');
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = `
+    <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+      <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+    </svg>
+    Saving...
+  `;
+
+  try {
+    const response = await fetch(`${API_URL}/users/allergies`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      body: JSON.stringify({ allergies: selectedAllergies })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      const user = getCurrentUser();
+      user.allergies = data.allergies;
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      showToast('✓ Allergies updated successfully', 'success');
+      displayUserInfo();
+      closeModal();
+    } else {
+      throw new Error(data.message || 'Failed to update allergies');
+    }
+  } catch (error) {
+    console.error('Error saving allergies:', error);
+    showToast('✗ Failed to save allergies. Please try again.', 'error');
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      Save Changes
+    `;
+  }
+});
+
+function showToast(message, type = 'info') {
+  const existingToast = document.querySelector('.toast-notification');
+  if (existingToast) {
+    existingToast.remove();
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast-notification toast-${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  setTimeout(() => toast.classList.add('show'), 10);
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}

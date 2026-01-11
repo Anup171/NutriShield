@@ -18,7 +18,7 @@
      </div>
    </div>
 
-   <p class="lead">Create your account and tell us your food allergies.</p>
+   <p class="lead">Create your account and configure your allergen sensitivity profile.</p>
 
    <form id="signupForm" autocomplete="on" novalidate>
      <label for="name">Full name</label>
@@ -33,14 +33,17 @@
      <label for="confirmPassword">Confirm password</label>
      <input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6" />
 
-     <label for="allergyDropdown">Known allergies (Select all that apply)</label>
+     <label for="allergyDropdown">
+       <span class="label-main">Allergen Sensitivity Profile</span>
+       <span class="label-sub">Select all applicable food allergens and intolerances</span>
+     </label>
 
      <div id="selectedPills" class="selected-pills" aria-live="polite" aria-atomic="true"></div>
 
      <div class="multi-row">
        <div id="allergyDropdown" class="multi-dropdown" data-open="false">
          <div class="multi-control" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="allergy-list">
-           <div class="multi-value" id="selectedText">Select allergies</div>
+           <div class="multi-value" id="selectedText">Select allergens from comprehensive database</div>
            <div class="chev" aria-hidden="true">
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                <polyline points="6 9 12 15 18 9"></polyline>
@@ -48,84 +51,290 @@
            </div>
          </div>
 
-         <div id="allergy-list" class="options-panel" role="listbox" aria-label="Allergies list">
-           <!-- STANDARDIZED ALLERGEN OPTIONS - Matches backend detection exactly -->
+         <div id="allergy-list" class="options-panel scientific-allergen-list" role="listbox" aria-label="Allergies list">
            
-           <!-- Major Allergens (Top 8) -->
-           <div class="allergy-category">Major Allergens</div>
-           <label class="opt"><input type="checkbox" value="Milk" /><span class="opt-label">🥛 Milk & Dairy Products</span></label>
-           <label class="opt"><input type="checkbox" value="Eggs" /><span class="opt-label">🥚 Eggs</span></label>
-           <label class="opt"><input type="checkbox" value="Peanuts" /><span class="opt-label">🥜 Peanuts</span></label>
-           <label class="opt"><input type="checkbox" value="Tree Nuts" /><span class="opt-label">🌰 Tree Nuts (Almonds, Cashews, Walnuts, etc.)</span></label>
-           <label class="opt"><input type="checkbox" value="Fish" /><span class="opt-label">🐟 Fish</span></label>
-           <label class="opt"><input type="checkbox" value="Shellfish" /><span class="opt-label">🦐 Shellfish (Shrimp, Crab, Lobster)</span></label>
-           <label class="opt"><input type="checkbox" value="Wheat" /><span class="opt-label">🌾 Wheat</span></label>
-           <label class="opt"><input type="checkbox" value="Soy" /><span class="opt-label">🫘 Soy</span></label>
-           
-           <!-- Additional Common Allergens -->
-           <div class="allergy-category">Other Common Allergens</div>
-           <label class="opt"><input type="checkbox" value="Gluten" /><span class="opt-label">🍞 Gluten (Wheat, Barley, Rye)</span></label>
-           <label class="opt"><input type="checkbox" value="Sesame" /><span class="opt-label">Sesame Seeds</span></label>
-           <label class="opt"><input type="checkbox" value="Mustard" /><span class="opt-label">Mustard</span></label>
-           <label class="opt"><input type="checkbox" value="Corn" /><span class="opt-label">🌽 Corn</span></label>
-           
-           <!-- Legumes -->
-           <div class="allergy-category">Legumes</div>
-           <label class="opt"><input type="checkbox" value="Chickpeas" /><span class="opt-label">Chickpeas</span></label>
-           <label class="opt"><input type="checkbox" value="Lentils" /><span class="opt-label">Lentils</span></label>
-           <label class="opt"><input type="checkbox" value="Peas" /><span class="opt-label">Peas</span></label>
-           <label class="opt"><input type="checkbox" value="Beans" /><span class="opt-label">Beans</span></label>
-           
-           <!-- Seafood Details -->
-           <div class="allergy-category">Seafood (Specific)</div>
-           <label class="opt"><input type="checkbox" value="Crustaceans" /><span class="opt-label">Crustaceans (Crab, Lobster, Crawfish)</span></label>
-           <label class="opt"><input type="checkbox" value="Mollusks" /><span class="opt-label">Mollusks (Clams, Oysters, Squid)</span></label>
-           
-           <!-- Fruits -->
-           <div class="allergy-category">Fruits</div>
-           <label class="opt"><input type="checkbox" value="Banana" /><span class="opt-label">🍌 Banana</span></label>
-           <label class="opt"><input type="checkbox" value="Avocado" /><span class="opt-label">🥑 Avocado</span></label>
-           <label class="opt"><input type="checkbox" value="Kiwi" /><span class="opt-label">🥝 Kiwi</span></label>
-           <label class="opt"><input type="checkbox" value="Strawberry" /><span class="opt-label">🍓 Strawberry</span></label>
-           
-           <!-- Vegetables -->
-           <div class="allergy-category">Vegetables</div>
-           <label class="opt"><input type="checkbox" value="Tomato" /><span class="opt-label">🍅 Tomato</span></label>
-           <label class="opt"><input type="checkbox" value="Potato" /><span class="opt-label">🥔 Potato</span></label>
-           <label class="opt"><input type="checkbox" value="Garlic" /><span class="opt-label">🧄 Garlic</span></label>
-           <label class="opt"><input type="checkbox" value="Onion" /><span class="opt-label">🧅 Onion</span></label>
-           
-           <!-- Grains -->
-           <div class="allergy-category">Grains</div>
-           <label class="opt"><input type="checkbox" value="Oats" /><span class="opt-label">Oats</span></label>
-           <label class="opt"><input type="checkbox" value="Rice" /><span class="opt-label">🍚 Rice</span></label>
-           <label class="opt"><input type="checkbox" value="Barley" /><span class="opt-label">Barley</span></label>
-           <label class="opt"><input type="checkbox" value="Rye" /><span class="opt-label">Rye</span></label>
-           <label class="opt"><input type="checkbox" value="Quinoa" /><span class="opt-label">Quinoa</span></label>
-           <label class="opt"><input type="checkbox" value="Buckwheat" /><span class="opt-label">Buckwheat</span></label>
-           
-           <!-- Other -->
-           <div class="allergy-category">Other Allergens</div>
-           <label class="opt"><input type="checkbox" value="Gelatin" /><span class="opt-label">Gelatin</span></label>
-           <label class="opt"><input type="checkbox" value="Cocoa" /><span class="opt-label">🍫 Cocoa/Chocolate</span></label>
-           <label class="opt"><input type="checkbox" value="Red Meat" /><span class="opt-label">🥩 Red Meat (Alpha-gal)</span></label>
-           <label class="opt"><input type="checkbox" value="Lupin" /><span class="opt-label">Lupin</span></label>
-           
-           <label class="opt"><input id="otherCheckbox" type="checkbox" value="Other" /><span class="opt-label">➕ Other (type below)</span></label>
-
-           <div id="otherInputRow" class="other-input-row" style="display:none;">
-             <input id="otherInput" class="other-input" type="text" placeholder="Type your allergy, then press Add" />
-             <button type="button" id="otherAdd" class="other-add">Add</button>
+           <!-- FDA Top 9 Priority Allergens -->
+           <div class="allergy-category-scientific">
+             <span class="category-icon">⚠️</span>
+             <span class="category-text">FDA Priority Allergens (Top 9)</span>
            </div>
+           <label class="opt scientific-opt"><input type="checkbox" value="Milk" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Milk & Dairy Products</span>
+               <span class="allergen-detail">Lactose, Casein, Whey proteins</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Eggs" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Eggs</span>
+               <span class="allergen-detail">Ovalbumin, Ovomucoid proteins</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Peanuts" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Peanuts</span>
+               <span class="allergen-detail">Arachis hypogaea (legume family)</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Tree Nuts" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Tree Nuts</span>
+               <span class="allergen-detail">Almonds, Cashews, Walnuts, Hazelnuts, Pecans, etc.</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Fish" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Fish (Finned)</span>
+               <span class="allergen-detail">Salmon, Tuna, Cod, and all finned species</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Shellfish" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Shellfish</span>
+               <span class="allergen-detail">Crustaceans & Mollusks (see specific types below)</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Wheat" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Wheat</span>
+               <span class="allergen-detail">Triticum species, gluten-containing grain</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Soy" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Soy (Soybean)</span>
+               <span class="allergen-detail">Glycine max, soy protein, lecithin</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Sesame" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Sesame Seeds</span>
+               <span class="allergen-detail">Sesamum indicum, tahini</span>
+             </span>
+           </label>
+           
+           <!-- EU/International Allergens -->
+           <div class="allergy-category-scientific">
+             <span class="category-icon">🌍</span>
+             <span class="category-text">EU Recognized Allergens</span>
+           </div>
+           <label class="opt scientific-opt"><input type="checkbox" value="Gluten" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Gluten (Cereal Grains)</span>
+               <span class="allergen-detail">Wheat, Barley, Rye - Gliadin proteins</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Mustard" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Mustard</span>
+               <span class="allergen-detail">Brassica species, condiment allergen</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Lupin" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Lupin (Lupine)</span>
+               <span class="allergen-detail">Lupinus species, legume protein</span>
+             </span>
+           </label>
+           
+           <!-- Legume Family Allergens -->
+           <div class="allergy-category-scientific">
+             <span class="category-icon">🫘</span>
+             <span class="category-text">Legume Family (Fabaceae)</span>
+           </div>
+           <label class="opt scientific-opt"><input type="checkbox" value="Chickpeas" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Chickpeas (Garbanzo Beans)</span>
+               <span class="allergen-detail">Cicer arietinum, hummus, besan</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Lentils" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Lentils</span>
+               <span class="allergen-detail">Lens culinaris, dal varieties</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Peas" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Peas (Garden & Split)</span>
+               <span class="allergen-detail">Pisum sativum, pea protein</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Beans" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Beans (Common)</span>
+               <span class="allergen-detail">Kidney, Black, Pinto, Lima, Navy beans</span>
+             </span>
+           </label>
+           
+           <!-- Marine Allergens -->
+           <div class="allergy-category-scientific">
+             <span class="category-icon">🌊</span>
+             <span class="category-text">Marine Protein Allergens</span>
+           </div>
+           <label class="opt scientific-opt"><input type="checkbox" value="Crustaceans" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Crustaceans</span>
+               <span class="allergen-detail">Shrimp, Crab, Lobster, Crawfish - Tropomyosin</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Mollusks" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Mollusks</span>
+               <span class="allergen-detail">Clams, Oysters, Squid, Octopus, Mussels</span>
+             </span>
+           </label>
+           
+           <!-- Grain & Cereal Allergens -->
+           <div class="allergy-category-scientific">
+             <span class="category-icon">🌾</span>
+             <span class="category-text">Cereal Grains</span>
+           </div>
+           <label class="opt scientific-opt"><input type="checkbox" value="Oats" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Oats</span>
+               <span class="allergen-detail">Avena sativa, avenin protein</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Rice" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Rice</span>
+               <span class="allergen-detail">Oryza sativa, all rice varieties</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Barley" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Barley</span>
+               <span class="allergen-detail">Hordeum vulgare, malt, beer ingredient</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Rye" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Rye</span>
+               <span class="allergen-detail">Secale cereale, pumpernickel ingredient</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Corn" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Corn (Maize)</span>
+               <span class="allergen-detail">Zea mays, cornstarch, HFCS</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Quinoa" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Quinoa</span>
+               <span class="allergen-detail">Chenopodium quinoa, pseudo-cereal</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Buckwheat" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Buckwheat</span>
+               <span class="allergen-detail">Fagopyrum esculentum, soba noodles</span>
+             </span>
+           </label>
+           
+           <!-- Fruit & Vegetable Allergens (OAS Related) -->
+           <div class="allergy-category-scientific">
+             <span class="category-icon">🍎</span>
+             <span class="category-text">Plant-Derived Allergens (OAS Associated)</span>
+           </div>
+           <label class="opt scientific-opt"><input type="checkbox" value="Banana" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Banana</span>
+               <span class="allergen-detail">Musa species, latex cross-reactivity</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Avocado" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Avocado</span>
+               <span class="allergen-detail">Persea americana, latex-fruit syndrome</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Kiwi" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Kiwi Fruit</span>
+               <span class="allergen-detail">Actinidia deliciosa, actinidin enzyme</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Strawberry" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Strawberry</span>
+               <span class="allergen-detail">Fragaria × ananassa, Rosaceae family</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Tomato" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Tomato</span>
+               <span class="allergen-detail">Solanum lycopersicum, nightshade family</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Potato" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Potato</span>
+               <span class="allergen-detail">Solanum tuberosum, solanine content</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Garlic" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Garlic</span>
+               <span class="allergen-detail">Allium sativum, allicin compound</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Onion" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Onion</span>
+               <span class="allergen-detail">Allium cepa, sulfur compounds</span>
+             </span>
+           </label>
+           
+           <!-- Special Category Allergens -->
+           <div class="allergy-category-scientific">
+             <span class="category-icon">🔬</span>
+             <span class="category-text">Specialty Allergens</span>
+           </div>
+           <label class="opt scientific-opt"><input type="checkbox" value="Gelatin" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Gelatin (Animal-Derived)</span>
+               <span class="allergen-detail">Collagen hydrolysate, porcine/bovine source</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Cocoa" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Cocoa / Chocolate</span>
+               <span class="allergen-detail">Theobroma cacao, chocolate products</span>
+             </span>
+           </label>
+           <label class="opt scientific-opt"><input type="checkbox" value="Red Meat" />
+             <span class="opt-label scientific-label">
+               <span class="allergen-name">Red Meat (Alpha-gal Syndrome)</span>
+               <span class="allergen-detail">Mammalian meat: Beef, Pork, Lamb - Galactose-α-1,3-galactose</span>
+             </span>
+           </label>
+           
+           <div class="custom-allergen-section">
+             <label class="opt scientific-opt custom-opt"><input id="otherCheckbox" type="checkbox" value="Other" />
+               <span class="opt-label scientific-label">
+                 <span class="allergen-name">➕ Custom Allergen</span>
+                 <span class="allergen-detail">Add an allergen not listed above</span>
+               </span>
+             </label>
 
-           <div id="otherError" class="other-error">Option already exists — please select from the list above.</div>
+             <div id="otherInputRow" class="other-input-row scientific-input" style="display:none;">
+               <input id="otherInput" class="other-input" type="text" placeholder="Enter allergen name (e.g., Shellac, Carmine, etc.)" />
+               <button type="button" id="otherAdd" class="other-add">Add Custom</button>
+             </div>
+
+             <div id="otherError" class="other-error scientific-error">
+               <span class="error-icon">⚠️</span> This allergen is already in the database. Please select it from the categories above.
+             </div>
+           </div>
          </div>
        </div>
      </div>
 
      <div id="msg" class="error" role="alert">Error message</div>
 
-     <button type="submit">Sign Up</button>
+     <button type="submit">Create Account & Save Profile</button>
    </form>
 
    <p class="footer-text">
@@ -136,21 +345,166 @@
  <script src="script.js"></script>
  
  <style>
-   .allergy-category {
-     font-size: 11px;
-     font-weight: 700;
-     color: #64748b;
-     text-transform: uppercase;
-     letter-spacing: 0.5px;
-     padding: 12px 16px 6px 16px;
-     margin-top: 8px;
-     background: #f8fafc;
-     border-top: 1px solid #e2e8f0;
+   /* Scientific-looking label styling */
+   .label-main {
+     display: block;
+     font-weight: 600;
+     font-size: 14px;
+     margin-bottom: 4px;
    }
    
-   .allergy-category:first-child {
+   .label-sub {
+     display: block;
+     font-size: 12px;
+     color: #64748b;
+     font-weight: 400;
+     margin-top: 2px;
+   }
+   
+   /* Scientific allergen list styling */
+   .scientific-allergen-list {
+     font-family: 'Poppins', -apple-system, system-ui, sans-serif;
+   }
+   
+   .allergy-category-scientific {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 10px;
+     font-weight: 700;
+     color: #475569;
+     text-transform: uppercase;
+     letter-spacing: 0.8px;
+     padding: 14px 16px 8px 16px;
+     margin-top: 8px;
+     background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+     border-top: 2px solid #cbd5e1;
+     border-left: 3px solid #3b82f6;
+   }
+   
+   .allergy-category-scientific:first-child {
      margin-top: 0;
      border-top: none;
+   }
+   
+   .category-icon {
+     font-size: 14px;
+     filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+   }
+   
+   .category-text {
+     flex: 1;
+   }
+   
+   /* Scientific option styling */
+   .scientific-opt {
+     padding: 10px 16px;
+     border-bottom: 1px solid #f1f5f9;
+     transition: all 0.2s ease;
+   }
+   
+   .scientific-opt:hover {
+     background: linear-gradient(90deg, #fafbfc 0%, #f8fafc 100%);
+     border-left: 3px solid #3b82f6;
+     padding-left: 13px;
+   }
+   
+   .scientific-label {
+     display: flex;
+     flex-direction: column;
+     gap: 4px;
+   }
+   
+   .allergen-name {
+     font-size: 14px;
+     font-weight: 500;
+     color: #1e293b;
+     display: block;
+   }
+   
+   .allergen-detail {
+     font-size: 11px;
+     color: #64748b;
+     font-weight: 400;
+     font-style: italic;
+     display: block;
+     line-height: 1.4;
+   }
+   
+   /* Custom allergen section */
+   .custom-allergen-section {
+     margin-top: 12px;
+     padding-top: 12px;
+     border-top: 2px solid #e2e8f0;
+     background: #fafbfc;
+   }
+   
+   .custom-opt {
+     background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+     border: 1px dashed #3b82f6;
+     border-radius: 6px;
+     margin: 12px;
+   }
+   
+   .custom-opt:hover {
+     background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+     border-style: solid;
+   }
+   
+   .scientific-input {
+     margin: 8px 12px 12px 12px;
+     padding: 12px;
+     background: white;
+     border: 1px solid #cbd5e1;
+     border-radius: 6px;
+   }
+   
+   .scientific-input input {
+     font-size: 13px;
+     font-family: 'Poppins', sans-serif;
+   }
+   
+   .scientific-input button {
+     background: #3b82f6;
+     font-weight: 500;
+     font-size: 12px;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+   }
+   
+   .scientific-error {
+     margin: 8px 12px;
+     padding: 10px 12px;
+     background: #fee;
+     border-left: 3px solid #dc2626;
+     font-size: 12px;
+     color: #991b1b;
+     display: flex;
+     align-items: center;
+     gap: 8px;
+   }
+   
+   .error-icon {
+     font-size: 14px;
+   }
+   
+   /* Selected pills scientific styling */
+   .selected-pills {
+     margin-bottom: 16px;
+   }
+   
+   .selected-pills .allergy-pill {
+     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+     color: white;
+     padding: 8px 14px;
+     border-radius: 20px;
+     font-size: 12px;
+     font-weight: 500;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     margin: 4px;
+     box-shadow: 0 2px 4px rgba(59,130,246,0.2);
    }
  </style>
 </body>

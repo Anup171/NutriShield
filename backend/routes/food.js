@@ -7,267 +7,8 @@ const {
   recordFoodDetection, 
   getUserSearchHistory 
 } = require('../helpers/schemaHelpers');
+const { checkForAllergens } = require('../helpers/allergenDetector');
 const UserFoodDetection = require('../models/UserFoodDetection');
-
-// STANDARDIZED ALLERGEN KEYWORDS - Perfectly matched with signup form
-const ALLERGEN_KEYWORDS = {
-  // Major Allergens
-  'milk': [
-    'milk', 'dairy', 'cream', 'butter', 'cheese', 'yogurt', 'yoghurt', 
-    'whey', 'casein', 'lactose', 'curd', 'ghee', 'paneer', 'buttermilk', 
-    'ice cream', 'icecream', 'frozen yogurt', 'custard', 'pudding',
-    'condensed milk', 'evaporated milk', 'half and half', 'half-and-half',
-    'sour cream', 'cottage cheese', 'ricotta', 'mozzarella', 'cheddar', 
-    'parmesan', 'gouda', 'brie', 'feta', 'swiss', 'provolone',
-    'cream cheese', 'mascarpone', 'blue cheese', 'goat cheese',
-    'milk chocolate', 'white chocolate', 'milk powder', 'whey protein',
-    'lactoglobulin', 'lactalbumin'
-  ],
-  
-  'eggs': [
-    'egg', 'eggs', 'albumin', 'mayonnaise', 'mayo', 'meringue', 
-    'eggnog', 'omelet', 'omelette', 'scrambled', 'fried egg', 
-    'boiled egg', 'poached egg', 'egg white', 'egg yolk',
-    'ovalbumin', 'ovomucoid', 'egg substitute', 'hollandaise'
-  ],
-  
-  'peanuts': [
-    'peanut', 'peanuts', 'groundnut', 'groundnuts', 
-    'peanut butter', 'peanut oil', 'arachis', 'goober'
-  ],
-  
-  'tree nuts': [
-    'almond', 'almonds', 'cashew', 'cashews', 'walnut', 'walnuts', 
-    'pecan', 'pecans', 'pistachio', 'pistachios', 'macadamia', 
-    'hazelnut', 'hazelnuts', 'nut', 'nuts', 'pine nut', 'pine nuts',
-    'brazil nut', 'brazil nuts', 'chestnut', 'chestnuts',
-    'hickory nut', 'beechnut', 'butternut', 'chinquapin',
-    'praline', 'marzipan', 'nougat', 'gianduja', 'nut butter'
-  ],
-  
-  'fish': [
-    'fish', 'salmon', 'tuna', 'cod', 'bass', 'flounder', 
-    'anchovy', 'anchovies', 'trout', 'halibut', 'sardine', 'sardines',
-    'mackerel', 'tilapia', 'catfish', 'seafood', 'haddock',
-    'pollock', 'mahi', 'snapper', 'perch', 'pike', 'herring',
-    'swordfish', 'grouper', 'sole', 'sea bass', 'seabass'
-  ],
-  
-  'shellfish': [
-    'shrimp', 'shrimps', 'prawn', 'prawns', 'crab', 'lobster', 
-    'crayfish', 'crawfish', 'shellfish', 'clam', 'clams',
-    'mussel', 'mussels', 'oyster', 'oysters', 'scallop', 'scallops',
-    'squid', 'octopus', 'cuttlefish', 'snail', 'abalone',
-    'sea urchin', 'barnacle'
-  ],
-  
-  'wheat': [
-    'wheat', 'flour', 'bread', 'pasta', 'semolina', 'bulgur', 
-    'couscous', 'seitan', 'spelt', 'kamut', 'farina', 'durum',
-    'noodle', 'noodles', 'macaroni', 'spaghetti', 'fettuccine',
-    'penne', 'rigatoni', 'tortilla', 'pita', 'bagel', 'baguette',
-    'croissant', 'biscuit', 'cracker', 'graham', 'matzo', 'matzah',
-    'wheat germ', 'wheat bran', 'whole wheat', 'wholewheat'
-  ],
-  
-  'soy': [
-    'soy', 'soya', 'tofu', 'edamame', 'tempeh', 'miso', 
-    'soybean', 'soybeans', 'soy sauce', 'tamari', 'soy milk', 'soymilk',
-    'soy protein', 'textured vegetable protein', 'tvp', 'natto',
-    'soy lecithin', 'soy flour', 'soy oil'
-  ],
-  
-  'gluten': [
-    'gluten', 'wheat', 'barley', 'rye', 'malt', 'beer', 'ale', 'lager',
-    'bread', 'pasta', 'flour', 'seitan', 'spelt', 'kamut',
-    'triticale', 'bulgur', 'couscous', 'farina', 'semolina'
-  ],
-  
-  'sesame': [
-    'sesame', 'tahini', 'sesame oil', 'sesame seed', 'sesame seeds',
-    'sesamol', 'sesamum', 'benne', 'gingelly', 'til', 'simsim'
-  ],
-  
-  // Additional allergens
-  'mustard': ['mustard', 'mustard seed', 'dijon', 'yellow mustard'],
-  
-  'corn': [
-    'corn', 'maize', 'cornmeal', 'cornstarch', 'corn starch',
-    'corn syrup', 'high fructose corn syrup', 'hfcs', 'hominy',
-    'polenta', 'grits', 'popcorn', 'corn oil', 'cornflour',
-    'masa', 'tortilla', 'corn flour'
-  ],
-  
-  'chickpeas': [
-    'chickpea', 'chickpeas', 'garbanzo', 'garbanzos', 'garbanzo bean',
-    'chana', 'hummus', 'houmous', 'falafel', 'besan', 'gram flour'
-  ],
-  
-  'lentils': [
-    'lentil', 'lentils', 'dal', 'dhal', 'daal', 'lentil soup',
-    'red lentil', 'green lentil', 'brown lentil', 'masoor', 'moong'
-  ],
-  
-  'peas': [
-    'pea', 'peas', 'green pea', 'garden pea', 'split pea',
-    'snow pea', 'snap pea', 'sugar snap', 'pea protein'
-  ],
-  
-  'beans': [
-    'bean', 'beans', 'kidney bean', 'black bean', 'pinto bean',
-    'navy bean', 'lima bean', 'butter bean', 'cannellini',
-    'great northern', 'fava bean', 'broad bean', 'adzuki',
-    'mung bean', 'refried beans'
-  ],
-  
-  'crustaceans': [
-    'crustacean', 'crab', 'lobster', 'crawfish', 'crayfish',
-    'shrimp', 'prawn', 'langoustine', 'krill'
-  ],
-  
-  'mollusks': [
-    'mollusk', 'mollusc', 'clam', 'oyster', 'mussel', 'scallop',
-    'squid', 'octopus', 'cuttlefish', 'snail', 'escargot',
-    'abalone', 'conch', 'whelk', 'periwinkle'
-  ],
-  
-  'banana': ['banana', 'plantain', 'banana bread'],
-  
-  'avocado': ['avocado', 'guacamole', 'avo'],
-  
-  'kiwi': ['kiwi', 'kiwifruit', 'chinese gooseberry'],
-  
-  'strawberry': ['strawberry', 'strawberries'],
-  
-  'tomato': [
-    'tomato', 'tomatoes', 'tomato sauce', 'marinara', 'salsa',
-    'ketchup', 'catsup', 'tomato paste', 'roma tomato',
-    'cherry tomato', 'sun dried tomato'
-  ],
-  
-  'potato': [
-    'potato', 'potatoes', 'french fries', 'french fry', 'fries',
-    'mashed potato', 'baked potato', 'hash brown', 'tater tot',
-    'potato chip', 'chips', 'crisps'
-  ],
-  
-  'garlic': ['garlic', 'garlic powder', 'garlic salt', 'aioli'],
-  
-  'onion': [
-    'onion', 'onions', 'scallion', 'green onion', 'shallot',
-    'leek', 'chive', 'onion powder', 'red onion', 'white onion',
-    'yellow onion', 'sweet onion'
-  ],
-  
-  'oats': [
-    'oat', 'oats', 'oatmeal', 'oat flour', 'oat milk', 'oat bran',
-    'rolled oats', 'steel cut oats', 'oat cereal', 'granola'
-  ],
-  
-  'rice': [
-    'rice', 'brown rice', 'white rice', 'wild rice', 'basmati',
-    'jasmine rice', 'rice flour', 'rice milk', 'rice paper',
-    'rice noodle', 'rice cake', 'risotto', 'sushi rice'
-  ],
-  
-  'barley': ['barley', 'barley malt', 'malt', 'malted barley'],
-  
-  'rye': ['rye', 'rye bread', 'rye flour', 'pumpernickel'],
-  
-  'quinoa': ['quinoa', 'quinoa flour'],
-  
-  'buckwheat': ['buckwheat', 'buckwheat flour', 'soba', 'soba noodle'],
-  
-  'gelatin': [
-    'gelatin', 'gelatine', 'jello', 'jell-o', 'marshmallow',
-    'gummy', 'gummies'
-  ],
-  
-  'cocoa': [
-    'cocoa', 'cacao', 'chocolate', 'dark chocolate', 'milk chocolate',
-    'white chocolate', 'hot chocolate', 'cocoa powder', 'cocoa butter'
-  ],
-  
-  'red meat': [
-    'beef', 'pork', 'lamb', 'veal', 'venison', 'bison', 'buffalo',
-    'red meat', 'steak', 'hamburger', 'bacon', 'ham', 'sausage',
-    'salami', 'pepperoni', 'prosciutto', 'alpha-gal', 'alpha gal'
-  ],
-  
-  'lupin': ['lupin', 'lupine', 'lupin flour', 'lupini bean']
-};
-
-// Helper function to check for allergens with PERFECT detection
-const checkForAllergens = (foodLabel, ingredients, healthLabels, category, userAllergens) => {
-  const detectedAllergens = [];
-  
-  // Create comprehensive search text from ALL available sources
-  const searchComponents = [
-    foodLabel || '',
-    category || '',
-    ...(ingredients || []),
-    ...(healthLabels || [])
-  ];
-  
-  // Clean and prepare search text
-  const searchText = searchComponents
-    .join(' ')
-    .toLowerCase()
-    .replace(/[^\w\s]/g, ' ') // Replace special chars with spaces
-    .replace(/\s+/g, ' '); // Collapse multiple spaces
-  
-  console.log('\n=== ALLERGEN DETECTION ===');
-  console.log('Food:', foodLabel);
-  console.log('Search text:', searchText);
-  console.log('User allergies:', userAllergens);
-
-  userAllergens.forEach(allergy => {
-    const allergyLower = allergy.toLowerCase().trim();
-    
-    // Get keywords for this allergy
-    const keywords = ALLERGEN_KEYWORDS[allergyLower] || [allergyLower];
-    
-    console.log(`\nChecking allergy: "${allergy}"`);
-    console.log(`Keywords to check: ${keywords.slice(0, 5).join(', ')}... (${keywords.length} total)`);
-    
-    // Check if any keyword matches
-    let found = false;
-    let matchedKeyword = '';
-    
-    for (const keyword of keywords) {
-      const keywordLower = keyword.toLowerCase();
-      
-      // Method 1: Exact word boundary match
-      const wordBoundaryRegex = new RegExp(`\\b${keywordLower}\\b`, 'i');
-      if (wordBoundaryRegex.test(searchText)) {
-        found = true;
-        matchedKeyword = keyword;
-        break;
-      }
-      
-      // Method 2: Part of compound word (e.g., "icecream", "soymilk")
-      if (searchText.includes(keywordLower)) {
-        found = true;
-        matchedKeyword = keyword;
-        break;
-      }
-    }
-
-    if (found) {
-      console.log(`✓ DETECTED via keyword: "${matchedKeyword}"`);
-      if (!detectedAllergens.includes(allergy)) {
-        detectedAllergens.push(allergy);
-      }
-    } else {
-      console.log(`✗ Not detected`);
-    }
-  });
-
-  console.log('\n✓ Final detected allergens:', detectedAllergens);
-  console.log('==========================\n');
-
-  return detectedAllergens;
-};
 
 // @route   GET /api/food/search
 // @desc    Search for food items using Edamam API
@@ -345,8 +86,10 @@ router.post('/details', protect, async (req, res) => {
       });
     }
 
+    // Get user with allergies
     const user = await getUserWithAllergies(req.user.id);
 
+    // Request food details from Edamam
     const requestBody = {
       ingredients: [{
         quantity: quantity,
@@ -355,12 +98,16 @@ router.post('/details', protect, async (req, res) => {
       }]
     };
 
-    const response = await axios.post('https://api.edamam.com/api/food-database/v2/nutrients', requestBody, {
-      params: {
-        app_id: process.env.EDAMAM_APP_ID,
-        app_key: process.env.EDAMAM_APP_KEY
+    const response = await axios.post(
+      'https://api.edamam.com/api/food-database/v2/nutrients', 
+      requestBody, 
+      {
+        params: {
+          app_id: process.env.EDAMAM_APP_ID,
+          app_key: process.env.EDAMAM_APP_KEY
+        }
       }
-    });
+    );
 
     const data = response.data;
     const parsedFood = data.ingredients?.[0]?.parsed?.[0];
@@ -375,31 +122,26 @@ router.post('/details', protect, async (req, res) => {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
 
-    // Extract ALL possible ingredient information
+    // Extract ingredients
     const ingredients = [];
     const healthLabels = data.healthLabels || [];
     const category = foodData?.category || 'General Food';
     
-    if (foodData) {
-      if (foodData.label) ingredients.push(foodData.label);
-      if (foodData.knownAs) ingredients.push(...foodData.knownAs);
-      if (foodData.foodContentsLabel) ingredients.push(foodData.foodContentsLabel);
-    }
-    
-    // Add the food name itself to ingredients for better detection
-    if (!ingredients.includes(foodName)) {
-      ingredients.unshift(foodName);
+    // Only use foodContentsLabel if it exists and looks like actual ingredients
+    if (foodData && foodData.foodContentsLabel && 
+        foodData.foodContentsLabel.length > 0 && 
+        foodData.foodContentsLabel !== foodName) {
+      ingredients.push(foodData.foodContentsLabel);
     }
 
-    // ENHANCED allergen detection with ALL available information
+    // COMPREHENSIVE ALLERGEN DETECTION using new system
     const detectedAllergens = checkForAllergens(
       foodName,
       ingredients,
-      healthLabels,
-      category,
       user.allergies
     );
 
+    // Build food details response
     const foodDetails = {
       foodId: foodId,
       label: foodName,
@@ -415,21 +157,27 @@ router.post('/details', protect, async (req, res) => {
         sugar: parseFloat((data.totalNutrients?.SUGAR?.quantity || 0).toFixed(1)),
         sodium: Math.round(data.totalNutrients?.NA?.quantity || 0),
         saturatedFat: parseFloat((data.totalNutrients?.FASAT?.quantity || 0).toFixed(1)),
-        cholesterol: Math.round(data.totalNutrients?.CHOLE?.quantity || 0)
+        cholesterol: Math.round(data.totalNutrients?.CHOLE?.quantity || 0),
+        calcium: Math.round(data.totalNutrients?.CA?.quantity || 0),
+        iron: parseFloat((data.totalNutrients?.FE?.quantity || 0).toFixed(1)),
+        potassium: Math.round(data.totalNutrients?.K?.quantity || 0),
+        vitaminA: Math.round(data.totalNutrients?.VITA_RAE?.quantity || 0),
+        vitaminC: parseFloat((data.totalNutrients?.VITC?.quantity || 0).toFixed(1)),
+        vitaminD: parseFloat((data.totalNutrients?.VITD?.quantity || 0).toFixed(1))
       },
-      ingredients: ingredients,
+      ingredients: ingredients.length > 0 ? ingredients : [foodName],
       healthLabels: healthLabels,
       allergenDetected: detectedAllergens.length > 0,
       detectedAllergens: detectedAllergens
     };
 
-    // Use new schema helper to record detection
+    // Record detection in database
     await recordFoodDetection(
       req.user.id,
       {
         name: foodName,
         externalId: foodId,
-        ingredients: ingredients,
+        ingredients: ingredients.length > 0 ? ingredients : [foodName],
         category: category,
         nutrition: {
           calories: foodDetails.calories,
@@ -464,7 +212,7 @@ router.get('/history', protect, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
 
-    // Use new schema helper (returns backward compatible format)
+    // Use schema helper (returns backward compatible format)
     const history = await getUserSearchHistory(req.user.id, limit);
 
     res.status(200).json({
