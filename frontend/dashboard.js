@@ -421,7 +421,7 @@ style.textContent = `
     flex: 1;
   }
   .suggestion-name strong {
-    color: #2563eb;
+    color: #34a853;
     font-weight: 600;
   }
   .suggestion-category {
@@ -449,7 +449,7 @@ style.textContent = `
   
   /* Scientific Allergy Pills */
   .scientific-allergy-pill {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #34a853 0%, #2d8f47 100%);
     color: white;
     padding: 8px 14px;
     border-radius: 20px;
@@ -459,14 +459,14 @@ style.textContent = `
     align-items: center;
     gap: 8px;
     margin: 4px;
-    box-shadow: 0 2px 5px rgba(59,130,246,0.25);
+    box-shadow: 0 2px 5px rgba(52,168,83,0.25);
     transition: all 0.2s ease;
     border: 1px solid rgba(255,255,255,0.2);
   }
   
   .scientific-allergy-pill:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(59,130,246,0.35);
+    box-shadow: 0 4px 8px rgba(52,168,83,0.35);
   }
   
   .allergen-icon {
